@@ -14,6 +14,8 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     engine = engine_from_config(settings, 'sqlalchemy.')
+    api_url = settings.get('api_url', 'http://localhost:3333')
+    settings['api_url'] = api_url
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     config = Configurator(settings=settings)

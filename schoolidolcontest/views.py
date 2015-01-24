@@ -4,6 +4,7 @@ import random
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
+import pyramid.threadlocal
 
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import func
@@ -14,19 +15,32 @@ from .models import (
     Vote,
     )
 
+class ApiRequest(object):
+    def __init__(self):
+        registry = pyramid.threadlocal.get_current_registry()
+        settings = registry.settings
+        self.api_url = settings['api_url']
+        self.session = requests.Session()
+
+    def get(self, path, *args, **kwargs):
+        return self.session.get(self.api_url + path, **kwargs)
+
 
 @view_config(route_name='home', renderer='templates/home.pt')
 def my_view(request):
+    r = ApiRequest()
     session = request.session
-    response = requests.get('http://127.0.0.1:3333/api/cards/')
+    response = r.get('/api/cards/')
     content = response.json()
-    r1 = random.randint(500, 510)
-    r2 = random.randint(500, 510)
+    r1 = random.randint(1, content['count'])
+    r2 = random.randint(1, content['count'])
+    while (r1 == r2):
+        r2 = random.randint(1, content['count'])
     session['left'] = r1
     session['right'] = r2
-    response1 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r1) + '/')
-    response2 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r2) + '/')
-    return {'right': response1.json(), 'left': response2.json()}
+    response1 = r.get('/api/cards/' + str(r1) + '/')
+    response2 = r.get('/api/cards/' + str(r2) + '/')
+    return {'right': response2.json(), 'left': response1.json()}
 
 
 @view_config(route_name='vote')
@@ -47,11 +61,10 @@ def vote_view(request):
                             status_int=500)
     return HTTPFound(location='/')
 
+
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.pt')
 def best_girl_view(request):
-    one = DBSession.query(Vote,
-                           func.count('id_card').label('total')).group_by('id_card').order_by('total DESC').first()
-    #one = DBSession.query(Vote, func.count('id_card')).group_by('id_card').first()
+    one = DBSession.query(Vote, func.count('id_card').label('total')).group_by('id_card').order_by('total DESC').first()
     best_girl = one._asdict()['Vote'].id_card
     response = requests.get('http://127.0.0.1:3333/api/cards/' + str(best_girl) + '/')
     return {'best_girl': response.json()}
