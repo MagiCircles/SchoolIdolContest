@@ -36,38 +36,44 @@ def my_view(request):
     r2 = random.randint(1, content['count'])
     while (r1 == r2):
         r2 = random.randint(1, content['count'])
-    session['left'] = r1
-    session['right'] = r2
-    response1 = r.get('/api/cards/' + str(r1) + '/')
-    response2 = r.get('/api/cards/' + str(r2) + '/')
-    return {'right': response2.json(), 'left': response1.json()}
+    card_left = r.get('/api/cards/' + str(r1) + '/').json()
+    card_right = r.get('/api/cards/' + str(r2) + '/').json()
+    session['left'] = card_left
+    session['right'] = card_right
+    return {'right': card_right, 'left': card_left}
 
 
 @view_config(route_name='vote')
 def vote_view(request):
     session = request.session
     if ('left' or 'right' in request.params) and ('left' or 'right' in session):
-        if 'left' in request.params:
-            card_id = session['left']
-        else:
-            card_id = session['right']
+        card = session['left'] if 'left' in request.params else session['right']
+        card_id = card['id']
+        name = card['name']
+        rarity = card['rarity']
         id_contest = 0
         ip = request.remote_addr
         try:
-            model = Vote(id_card=card_id, ip=ip, id_contest=id_contest)
+            model = Vote(id_card=card_id, ip=ip, id_contest=id_contest,
+                         name=name, rarity=rarity)
             DBSession.add(model)
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
     return HTTPFound(location='/')
 
+def count_one_by_field(name):
+    r = ApiRequest()
+    req = DBSession.query(Vote, func.count(name).label('total')).group_by(name).order_by('total DESC').first()
+    card = req._asdict()['Vote'].id_card
+    response = r.get('/api/cards/' + str(card) + '/')
+    return response.json()
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.pt')
 def best_girl_view(request):
-    one = DBSession.query(Vote, func.count('id_card').label('total')).group_by('id_card').order_by('total DESC').first()
-    best_girl = one._asdict()['Vote'].id_card
-    response = requests.get('http://127.0.0.1:3333/api/cards/' + str(best_girl) + '/')
-    return {'best_girl': response.json()}
+    best_card = count_one_by_field('id_card')
+    best_girl = count_one_by_field('name')
+    return {'best_card': best_card, 'best_girl': best_girl}
 
 
 conn_err_msg = """\

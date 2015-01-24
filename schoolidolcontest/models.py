@@ -22,6 +22,8 @@ class Vote(Base):
     id = Column(Integer, primary_key=True)
     ip = Column(Text)
     id_card = Column(Integer)
+    name = Column(Text)
+    rarity = Column(Text)
     id_contest = Column(Integer)
 
 #Index('my_index', Vote.name, unique=True, mysql_length=255)

@@ -8,7 +8,11 @@
 <body>
   <p>
   <h1> BEST GIRL IS ${best_girl.name} </h1>
-  <img src="${best_girl.card_url}"></img>
+  <img src="${best_girl.card_url}" width=100px></img>
+  </p>
+  <p>
+  <h1> BEST CARD IS ${best_card.name} </h1>
+  <img src="${best_card.card_url}" width=100px></img>
   </p>
 </body>
 </html>
