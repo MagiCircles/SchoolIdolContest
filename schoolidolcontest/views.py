@@ -40,7 +40,14 @@ def my_view(request):
     card_right = r.get('/api/cards/' + str(r2) + '/').json()
     session['left'] = card_left
     session['right'] = card_right
-    return {'right': card_right, 'left': card_left}
+    idolized_left = random.choice([True, False])
+    idolized_right = random.choice([True, False])
+    session['idolized_left'] = idolized_left
+    session['idolized_right'] = idolized_right
+    return {'right': card_right,
+            'idolized_right': idolized_right,
+            'left': card_left,
+            'idolized_left': idolized_left}
 
 
 @view_config(route_name='vote')
@@ -48,6 +55,7 @@ def vote_view(request):
     session = request.session
     if ('left' or 'right' in request.params) and ('left' or 'right' in session):
         card = session['left'] if 'left' in request.params else session['right']
+        idolized = session['idolized_left'] if 'left' in request.params else session['idolized_right']
         card_id = card['id']
         name = card['name']
         rarity = card['rarity']
@@ -55,7 +63,7 @@ def vote_view(request):
         ip = request.remote_addr
         try:
             model = Vote(id_card=card_id, ip=ip, id_contest=id_contest,
-                         name=name, rarity=rarity)
+                         name=name, rarity=rarity, idolized=idolized)
             DBSession.add(model)
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
@@ -66,14 +74,18 @@ def count_one_by_field(name):
     r = ApiRequest()
     req = DBSession.query(Vote, func.count(name).label('total')).group_by(name).order_by('total DESC').first()
     card = req._asdict()['Vote'].id_card
+    idolized = req._asdict()['Vote'].idolized
     response = r.get('/api/cards/' + str(card) + '/')
-    return response.json()
+    return idolized, response.json()
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.pt')
 def best_girl_view(request):
-    best_card = count_one_by_field('id_card')
-    best_girl = count_one_by_field('name')
-    return {'best_card': best_card, 'best_girl': best_girl}
+    idolized_card, best_card = count_one_by_field('id_card')
+    idolized_girl, best_girl = count_one_by_field('name')
+    return {'best_card': best_card,
+            'idolized_girl': idolized_girl,
+            'best_girl': best_girl,
+            'idolized_card': best_card,}
 
 
 conn_err_msg = """\

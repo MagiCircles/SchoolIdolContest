@@ -8,11 +8,11 @@
 <body>
   <p>
   <h1> BEST GIRL IS ${best_girl.name} </h1>
-  <img src="${best_girl.card_url}" width=100px></img>
+  <img src="${best_girl.card_url if best_girl.card_url and idolized_girl else best_girl.card_idolized_url}" width=100></img>
   </p>
   <p>
   <h1> BEST CARD IS ${best_card.name} </h1>
-  <img src="${best_card.card_url}" width=100px></img>
+  <img src="${best_card.card_url if best_card.card_url and idolized_card else best_card.card_idolized_url}" width=100></img>
   </p>
 </body>
 </html>

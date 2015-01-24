@@ -13,10 +13,10 @@
     <div id="name">
       <p>${left.id}</p>
       <p>${left.name}</p>
-      <img src="${left.card_url if left.card_url else left.card_idolized_url}" width=100></img>
+      <img src="${left.card_url if left.card_url and idolized_left else left.card_idolized_url}" width=100></img>
       <p>${right.id}</p>
       <p>${right.name}</p>
-      <img src="${right.card_url if right.card_url else right.card_idolized_url}" width=100></img>
+      <img src="${right.card_url if right.card_url and idolized_right else right.card_idolized_url}" width=100></img>
     </div>
     <div>
       </div>

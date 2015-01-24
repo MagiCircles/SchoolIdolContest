@@ -3,6 +3,7 @@ from sqlalchemy import (
     Index,
     Integer,
     Text,
+    Boolean,
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -25,5 +26,6 @@ class Vote(Base):
     name = Column(Text)
     rarity = Column(Text)
     id_contest = Column(Integer)
+    idolized = Column(Boolean)
 
 #Index('my_index', Vote.name, unique=True, mysql_length=255)
