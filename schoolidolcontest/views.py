@@ -26,14 +26,14 @@ def my_view(request):
     session['right'] = r2
     response1 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r1) + '/')
     response2 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r2) + '/')
-    return {'card2': response1.json(), 'card1': response2.json()}
+    return {'right': response1.json(), 'left': response2.json()}
 
 
 @view_config(route_name='vote')
 def vote_view(request):
     session = request.session
-    if 'card1' or 'card2' in request.params:
-        if 'card1' in request.params:
+    if 'left' or 'right' in request.params:
+        if 'left' in request.params:
             card_id = session['left']
         else:
             card_id = session['right']

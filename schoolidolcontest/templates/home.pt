@@ -7,16 +7,16 @@
   </head>
   <body>
       <form action="/__vote" method="post">
-        <input type="submit" name="card1" value="${card1.name.split(' ')[-1]} is best"/>
-        <input type="submit" name="card2" value="${card2.name.split(' ')[-1]} is best"/>
+        <input type="submit" name="left" value="${left.name.split(' ')[-1]} is best"/>
+        <input type="submit" name="right" value="${right.name.split(' ')[-1]} is best"/>
         </form>
     <div id="name">
-      <p>${card1.id}</p>
-      <p>${card1.name}</p>
-      <img src="${card1.card_url if card1.card_url else card1.card_idolized_url}" width=100></img>
-      <p>${card2.id}</p>
-      <p>${card2.name}</p>
-      <img src="${card2.card_url if card2.card_url else card2.card_idolized_url}" width=100></img>
+      <p>${left.id}</p>
+      <p>${left.name}</p>
+      <img src="${left.card_url if left.card_url else left.card_idolized_url}" width=100></img>
+      <p>${right.id}</p>
+      <p>${right.name}</p>
+      <img src="${right.card_url if right.card_url else right.card_idolized_url}" width=100></img>
     </div>
     <div>
       </div>
