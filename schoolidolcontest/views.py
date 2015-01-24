@@ -17,11 +17,13 @@ from .models import (
 
 @view_config(route_name='home', renderer='templates/home.pt')
 def my_view(request):
+    session = request.session
     response = requests.get('http://127.0.0.1:3333/api/cards/')
     content = response.json()
     r1 = random.randint(500, 510)
     r2 = random.randint(500, 510)
-    print r1, r2
+    session['left'] = r1
+    session['right'] = r2
     response1 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r1) + '/')
     response2 = requests.get('http://127.0.0.1:3333/api/cards/' + str(r2) + '/')
     return {'card2': response1.json(), 'card1': response2.json()}
@@ -29,11 +31,12 @@ def my_view(request):
 
 @view_config(route_name='vote')
 def vote_view(request):
+    session = request.session
     if 'card1' or 'card2' in request.params:
         if 'card1' in request.params:
-            card_id = request.params['card1_id']
+            card_id = session['left']
         else:
-            card_id = request.params['card2_id']
+            card_id = session['right']
         id_contest = 0
         ip = request.remote_addr
         try:

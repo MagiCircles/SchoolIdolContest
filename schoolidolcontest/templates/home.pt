@@ -8,9 +8,7 @@
   <body>
       <form action="/__vote" method="post">
         <input type="submit" name="card1" value="${card1.name.split(' ')[-1]} is best"/>
-        <input type="hidden" name="card1_id" value="${card1.id}"/>
         <input type="submit" name="card2" value="${card2.name.split(' ')[-1]} is best"/>
-        <input type="hidden" name="card2_id" value="${card2.id}"/>
         </form>
     <div id="name">
       <p>${card1.id}</p>
