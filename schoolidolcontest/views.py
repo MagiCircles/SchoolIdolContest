@@ -32,7 +32,7 @@ def my_view(request):
 @view_config(route_name='vote')
 def vote_view(request):
     session = request.session
-    if 'left' or 'right' in request.params:
+    if ('left' or 'right' in request.params) and ('left' or 'right' in session):
         if 'left' in request.params:
             card_id = session['left']
         else:
