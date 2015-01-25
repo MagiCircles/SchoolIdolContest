@@ -25,8 +25,7 @@ class ApiRequest(object):
     def get(self, path, *args, **kwargs):
         return self.session.get(self.api_url + path, **kwargs)
 
-
-@view_config(route_name='home', renderer='templates/home.pt')
+@view_config(route_name='home', renderer='templates/home.jinja2')
 def my_view(request):
     r = ApiRequest()
     session = request.session
@@ -48,7 +47,6 @@ def my_view(request):
             'idolized_right': idolized_right,
             'left': card_left,
             'idolized_left': idolized_left}
-
 
 @view_config(route_name='vote')
 def vote_view(request):
@@ -72,20 +70,19 @@ def vote_view(request):
 
 def count_one_by_field(name):
     r = ApiRequest()
-    req = DBSession.query(Vote, func.count(name).label('total')).group_by(name).order_by('total DESC').first()
-    card = req._asdict()['Vote'].id_card
-    idolized = req._asdict()['Vote'].idolized
-    response = r.get('/api/cards/' + str(card) + '/')
-    return idolized, response.json()
+    req = DBSession.query(Vote,
+                          func.count(name).label('total')).group_by(name).order_by('total DESC').all()
+    l = [(i._asdict()['Vote'].idolized, r.get('/api/cards/' +
+                                              str(i._asdict()['Vote'].id_card) +
+                                              '/').json()) for i in req[:10]]
+    return l
 
-@view_config(route_name='bestgirl', renderer='templates/bestgirl.pt')
+@view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
 def best_girl_view(request):
-    idolized_card, best_card = count_one_by_field('id_card')
-    idolized_girl, best_girl = count_one_by_field('name')
-    return {'best_card': best_card,
-            'idolized_girl': idolized_girl,
-            'best_girl': best_girl,
-            'idolized_card': best_card,}
+    list_card = count_one_by_field('id_card')
+    list_girl = count_one_by_field('name')
+    return {'list_card': list_card ,
+            'list_girl': list_girl,}
 
 
 conn_err_msg = """\
