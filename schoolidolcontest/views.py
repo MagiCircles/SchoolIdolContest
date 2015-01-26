@@ -25,28 +25,43 @@ class ApiRequest(object):
     def get(self, path, *args, **kwargs):
         return self.session.get(self.api_url + path, **kwargs)
 
+def get_cards(left_id, right_id):
+    ret = dict()
+    r = ApiRequest()
+    ret['left'] = r.get('/api/cards/' + str(left_id) + '/').json()
+    ret['right'] = r.get('/api/cards/' + str(right_id) + '/').json()
+    ret['idolized_left'] = random.choice([True, False])
+    ret['idolized_right'] = random.choice([True, False])
+    return ret
+
+def filter_two_random_cards(*args, **kwargs):
+    r = ApiRequest()
+    cards = r.get('/api/cardids', *args, **kwargs).json()
+    left_id = random.choice(cards)
+    right_id = random.choice(cards)
+    while (left_id == right_id):
+        right_id = random.choice(cards)
+    et['idolized_right'] = random.choice([True, False])
+    return get_cards(left_id, right_id)
+
+def pick_two_random_cards():
+    r = ApiRequest()
+    cards = r.get('/api/cards', params={'page_size': 1}).json()
+    left_id = random.randint(1, cards['count'])
+    right_id = random.randint(1, cards['count'])
+    while (left_id == right_id):
+        right_id = random.randint(1, cards['count'])
+    return get_cards(left_id, right_id)
+
 @view_config(route_name='home', renderer='templates/home.jinja2')
 def my_view(request):
-    r = ApiRequest()
     session = request.session
-    response = r.get('/api/cards/')
-    content = response.json()
-    r1 = random.randint(1, content['count'])
-    r2 = random.randint(1, content['count'])
-    while (r1 == r2):
-        r2 = random.randint(1, content['count'])
-    card_left = r.get('/api/cards/' + str(r1) + '/').json()
-    card_right = r.get('/api/cards/' + str(r2) + '/').json()
-    session['left'] = card_left
-    session['right'] = card_right
-    idolized_left = random.choice([True, False])
-    idolized_right = random.choice([True, False])
-    session['idolized_left'] = idolized_left
-    session['idolized_right'] = idolized_right
-    return {'right': card_right,
-            'idolized_right': idolized_right,
-            'left': card_left,
-            'idolized_left': idolized_left}
+    cards = pick_two_random_cards()
+    session['left'] = cards['left']
+    session['right'] = cards['right']
+    session['idolized_left'] = cards['idolized_left']
+    session['idolized_right'] = cards['idolized_right']
+    return cards
 
 @view_config(route_name='vote')
 def vote_view(request):
