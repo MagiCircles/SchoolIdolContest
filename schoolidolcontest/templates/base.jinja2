@@ -1,0 +1,47 @@
+{% set mainTitle = "ラブライブ! School Idol Contest" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ mainTitle }} - {% block title %}最高のアイドルのための究極の戦い{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/bower/bootstrap/dist/css/bootstrap.min.css">
+    <link href="/static/bower/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet/less" type="text/css" href="/static/less/style.less" /> -->
+    <!-- <script src="/static/bower/less/dist/less.min.js"></script> -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+	</script>
+	<![endif]-->
+  </head>
+  <body>
+
+    <nav class="navbar navbar-schoolidol navbar-fixed-top">
+      <div class="container">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="#">{{ mainTitle }}</a>
+	</div>
+	<ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+	  <li><a href="/">Vote</a></li>
+	  <li><a href="/best">Ranking</a></li>
+	</ul>
+      </div>
+    </nav>
+
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="/static/bower/jquery/dist/jquery.min.js"></script>
+    <script src="/static/bower/bootstrap/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

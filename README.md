@@ -1,18 +1,34 @@
-SchoolIdolContest README
-==================
+LoveLive! School Idol Contest
+=============================
 
 A Facemash-like web application based on the Love Live! franchise.
 
-Cards data are fetched using School Idol API (https://github.com/db0company/SchoolIdolAPI)
+Cards data are fetched using [the unofficial School Idol API](https://github.com/db0company/SchoolIdolAPI).
 
 Getting Started
 ---------------
 
-- cd <directory containing this file>
+```shell
+# Clone the repo
+git clone https://github.com/Engil/SchoolIdolContest.git
+cd SchoolIdolContest
 
-- $VENV/bin/python setup.py develop
+# Create a virtualenv to isolate the package dependencies locally
+virtualenv env
+source env/bin/activate
 
-- $VENV/bin/initialize_SchoolIdolContest_db development.ini
+# Install dependencies & setup project
+python setup.py develop
+initialize_SchoolIdolContest_db development.ini
 
-- $VENV/bin/pserve development.ini
+# Install client-side dependencies & compile CSS
+npm install bower
+bower install
+mkdir -p schoolidolcontest/static/css/
+lessc --compress schoolidolcontest/static/less/style.less > schoolidolcontest/static/css/style.css
 
+# Launch server
+pserve development.ini --reload
+```
+
+![School Idol Contest COCOisBEST](http://i.imgur.com/awingob.png)

@@ -1,0 +1,15 @@
+{
+    "name": "School Idol Contest",
+    "version": "0.0.0",
+    "authors": [
+	"Enguerrand Decorne <decorne.en@gmail.com>",
+	"db0company <db0company@gmail.com>"
+    ],
+    "description": "The ultimate battle of the school idols",
+    "license": "Apache2",
+    "dependencies": {
+	"less": "~2.0.0",
+	"bootstrap": "~3.3.1",
+	"fontawesome": "~4.3.0"
+    }
+}

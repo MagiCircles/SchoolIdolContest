@@ -1,23 +1,86 @@
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"0>
+{% extends "base.jinja2" %}
 
-  <title>Bestgirl</title>
+{% block title %}BEST GIRL{% endblock %}
 
-</head>
-<body>
-  {% for i, c in list_girl %}
-  <h1> BEST GIRL IS {{c.name}} </h1>
-  <p>
-  <img src="{{c.card_url if c.card_url and i else c.card_idolized_url}}" width=100></img>
-  </p>
-  {% endfor %}
+{% block content %}
 
-  {% for i, c in list_card %}
-  <h1> BEST CARD IS {{c.name}} </h1>
-  <p>
-  <img src="{{c.card_url if c.card_url and i else c.card_idolized_url}}" width=100></img>
-  </p>
-  {% endfor %}
-</body>
-</html>
+<h1>Ranking</h1>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-schoolidol ranking">
+      <div class="panel-heading">
+	<strong>BEST Girls</strong>
+      </div>
+      <div class="panel-body">
+	{% for (idx, (idolized, card)) in list_girl %}
+	<a class="row" href="http://decaf.kouhi.me/lovelive/index.php?title={{ card.name }}" target="_blank">
+	  <div class="col-sm-2">
+	    <div class="rank">
+	      <span class="fa-stack fa-lg">
+		<i class="fa fa-star fa-stack-2x"></i>
+		<span class="fa number">{{ idx + 1 }}</span>
+	      </span>
+	    </div>
+	  </div>
+	  <div class="col-sm-10">
+	    <div class="pull-right">
+	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_url if (idolized or not card.card_url) else card.card_url }}')"></div>
+	    </div>
+	    <div class="name name-card">
+	      <strong>{{ card.name }}</strong><br />
+	    </div>
+	  </div>
+	</a>
+	{% endfor %}
+      </div> <!-- panel-body -->
+    </div> <!-- panel -->
+  </div> <!-- col -->
+  <div class="col-md-6">
+    <div class="panel panel-schoolidol ranking">
+      <div class="panel-heading">
+	<strong>BEST Cards</strong>
+      </div>
+      <div class="panel-body">
+	{% for (idx, (idolized, card)) in list_card %}
+	<a class="row" href="http://decaf.kouhi.me/lovelive/index.php?title={{ card.name }}" target="_blank">
+	  <div class="col-sm-2">
+	    <div class="rank">
+	      <span class="fa-stack fa-lg">
+		<i class="fa fa-star fa-stack-2x"></i>
+		<span class="fa number">{{ idx + 1 }}</span>
+	      </span>
+	    </div>
+	  </div>
+	  <div class="col-sm-10">
+	    <div class="pull-right">
+	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_url if (idolized or not card.card_url) else card.card_url }}')"></div>
+	    </div>
+	    <div class="name">
+	      <strong>{{ card.name }}</strong><br />
+	      #{{ card.id }} {{ "idolized" if idolized }}
+	    </div>
+	  </div>
+	</a>
+	{% endfor %}
+      </div> <!-- panel-body -->
+    </div> <!-- panel -->
+  </div> <!-- col -->
+  <!-- <div class="col-md-6"> -->
+  <!--   <div class="panel panel-schoolidol"> -->
+  <!--     <div class="panel-heading"> -->
+  <!--	<strong>BEST Girls Overall</strong> -->
+  <!--     </div> -->
+  <!--     <div class="panel-body"> -->
+  <!--	{% for i, c in list_card %} -->
+  <!--	<strong> BEST CARD IS {{c.name}} </strong> -->
+  <!--	<p> -->
+  <!--	  <img src="{{c.card_url if c.card_url and i else c.card_idolized_url}}" width=100></img> -->
+  <!--	</p> -->
+  <!--	{% endfor %} -->
+  <!--     </div> <\!-- panel-body -\-> -->
+  <!--   </div> <\!-- panel -\-> -->
+  <!-- </div> <\!-- col -\-> -->
+</div> <!-- row -->
+
+{% endblock %}

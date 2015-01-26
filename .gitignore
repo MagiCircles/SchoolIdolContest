@@ -1,0 +1,5 @@
+schoolidolcontest/static/bower
+*.pyc
+SchoolIdolContest.egg-info/
+SchoolIdolContest.sqlite
+env

@@ -96,8 +96,8 @@ def count_one_by_field(name):
 def best_girl_view(request):
     list_card = count_one_by_field('id_card')
     list_girl = count_one_by_field('name')
-    return {'list_card': list_card ,
-            'list_girl': list_girl,}
+    return {'list_card': enumerate(list_card) ,
+            'list_girl': enumerate(list_girl),}
 
 
 conn_err_msg = """\
