@@ -41,7 +41,6 @@ def filter_two_random_cards(*args, **kwargs):
     right_id = random.choice(cards)
     while (left_id == right_id):
         right_id = random.choice(cards)
-    ret['idolized_right'] = random.choice([True, False])
     return get_cards(left_id, right_id)
 
 def pick_two_random_cards():
