@@ -41,7 +41,7 @@ def filter_two_random_cards(*args, **kwargs):
     right_id = random.choice(cards)
     while (left_id == right_id):
         right_id = random.choice(cards)
-    et['idolized_right'] = random.choice([True, False])
+    ret['idolized_right'] = random.choice([True, False])
     return get_cards(left_id, right_id)
 
 def pick_two_random_cards():
@@ -73,29 +73,39 @@ def vote_view(request):
         name = card['name']
         rarity = card['rarity']
         id_contest = 0
-        ip = request.remote_addr
         try:
-            model = Vote(id_card=card_id, ip=ip, id_contest=id_contest,
-                         name=name, rarity=rarity, idolized=idolized)
-            DBSession.add(model)
+            req = DBSession.query(Vote).filter_by(id_card=card_id,
+                                               id_contest=id_contest,
+                                               idolized=idolized).first()
+            if not req:
+                model = Vote(id_card=card_id, id_contest=id_contest,
+                            name=name, counter=1, rarity=rarity, idolized=idolized)
+                DBSession.add(model)
+            else:
+                req.counter += 1
+                DBSession.add(req)
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
     return HTTPFound(location='/')
 
-def count_one_by_field(name):
+def count_by_name():
     r = ApiRequest()
     req = DBSession.query(Vote,
-                          func.count(name).label('total')).group_by(name).order_by('total DESC').all()
-    l = [(i._asdict()['Vote'].idolized, r.get('/api/cards/' +
-                                              str(i._asdict()['Vote'].id_card) +
-                                              '/').json()) for i in req[:10]]
+                          func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/').json()) for (i, _) in req[:10]]
+    return l
+
+def count_by_id():
+    r = ApiRequest()
+    req = DBSession.query(Vote).order_by('counter DESC').all()
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/').json()) for i in req[:10]]
     return l
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
 def best_girl_view(request):
-    list_card = count_one_by_field('id_card')
-    list_girl = count_one_by_field('name')
+    list_card = count_by_id()
+    list_girl = count_by_name()
     return {'list_card': enumerate(list_card) ,
             'list_girl': enumerate(list_girl),}
 

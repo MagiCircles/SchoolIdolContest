@@ -22,11 +22,11 @@ Base = declarative_base()
 class Vote(Base):
     __tablename__ = 'votes'
     id = Column(Integer, primary_key=True)
-    ip = Column(Text)
     id_card = Column(Integer)
     name = Column(Text)
     rarity = Column(Text)
     id_contest = Column(Integer)
+    counter = Column(Integer)
     idolized = Column(Boolean)
 
 class Contest(Base):
