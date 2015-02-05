@@ -1,9 +1,9 @@
-{% set mainTitle = "ラブライブ! School Idol Contest" %}
+{% set mainTitle = "School Idol Tomodachi" %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>{{ mainTitle }} - {% block title %}最高のアイドルのための究極の戦い{% endblock %}</title>
+    <title>{{ mainTitle }} - {% block title %}The ultimate battle between School Idols{% endblock %}</title>
 
     <link rel="stylesheet" href="/static/bower/bootstrap/dist/css/bootstrap.min.css">
     <link href="/static/bower/fontawesome/css/font-awesome.min.css" rel="stylesheet">
@@ -28,11 +28,11 @@
 	    <span class="icon-bar"></span>
 	    <span class="icon-bar"></span>
 	  </button>
-	  <a class="navbar-brand" href="#">{{ mainTitle }}</a>
+	  <a class="navbar-brand" href="/">{{ mainTitle }}</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right collapse navbar-collapse">
-	  <li><a href="/">Vote</a></li>
-	  <li><a href="/best">Ranking</a></li>
+	  <li><a href="{{ url_prefix }}">Vote</a></li>
+	  <li><a href="{{ url_prefix }}best">Ranking</a></li>
 	</ul>
       </div>
     </nav>

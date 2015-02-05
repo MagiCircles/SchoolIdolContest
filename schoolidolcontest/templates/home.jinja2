@@ -11,20 +11,20 @@
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="left" value="" id="left">
 	<div class="panel-body">
-	  <img src="{{ left.card_url if left.card_url and idolized_left else left.card_idolized_url }}">
+	  <img src="{{ cards.left.card_image if cards.left.card_image and idolized_left else cards.left.card_idolized_image }}">
 	</div>
 	<div class="panel-heading">
-	  <strong>#{{ left.id }} {{ left.name.split(' ')[-1]  }} is BEST</strong>
+	  <strong>#{{ cards.left.id }} {{ cards.left.name.split(' ')[-1]  }} is BEST</strong>
 	</div>
       </button> <!-- panel -->
     </div> <!-- col -->
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="right" id="right">
 	<div class="panel-body">
-	  <img src="{{ right.card_url if right.card_url and idolized_right else right.card_idolized_url }}">
+	  <img src="{{ cards.right.card_image if cards.right.card_image and idolized_right else cards.right.card_idolized_image }}">
 	</div>
 	<div class="panel-heading">
-	  <strong>#{{ right.id }} {{ right.name.split(' ')[-1] }} is BEST</strong>
+	  <strong>#{{ cards.right.id }} {{ cards.right.name.split(' ')[-1] }} is BEST</strong>
 	</div>
       </button> <!-- panel -->
     </div> <!-- col -->

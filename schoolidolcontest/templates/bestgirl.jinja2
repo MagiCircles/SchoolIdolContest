@@ -25,7 +25,7 @@
 	  </div>
 	  <div class="col-sm-10">
 	    <div class="pull-right">
-	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_url if (idolized or not card.card_url) else card.card_url }}')"></div>
+	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_image if (idolized or not card.card_image) else card.card_image }}')"></div>
 	    </div>
 	    <div class="name name-card">
 	      <strong>{{ card.name }}</strong><br />
@@ -54,7 +54,7 @@
 	  </div>
 	  <div class="col-sm-10">
 	    <div class="pull-right">
-	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_url if (idolized or not card.card_url) else card.card_url }}')"></div>
+	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_image if (idolized or not card.card_image) else card.card_image }}')"></div>
 	    </div>
 	    <div class="name">
 	      <strong>{{ card.name }}</strong><br />
@@ -66,21 +66,5 @@
       </div> <!-- panel-body -->
     </div> <!-- panel -->
   </div> <!-- col -->
-  <!-- <div class="col-md-6"> -->
-  <!--   <div class="panel panel-schoolidol"> -->
-  <!--     <div class="panel-heading"> -->
-  <!--	<strong>BEST Girls Overall</strong> -->
-  <!--     </div> -->
-  <!--     <div class="panel-body"> -->
-  <!--	{% for i, c in list_card %} -->
-  <!--	<strong> BEST CARD IS {{c.name}} </strong> -->
-  <!--	<p> -->
-  <!--	  <img src="{{c.card_url if c.card_url and i else c.card_idolized_url}}" width=100></img> -->
-  <!--	</p> -->
-  <!--	{% endfor %} -->
-  <!--     </div> <\!-- panel-body -\-> -->
-  <!--   </div> <\!-- panel -\-> -->
-  <!-- </div> <\!-- col -\-> -->
-</div> <!-- row -->
 
 {% endblock %}

@@ -60,7 +60,12 @@ def my_view(request):
     session['right'] = cards['right']
     session['idolized_left'] = cards['idolized_left']
     session['idolized_right'] = cards['idolized_right']
-    return cards
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {
+        'cards': cards,
+        'url_prefix': settings['url_prefix'],
+    }
 
 @view_config(route_name='vote')
 def vote_view(request):
@@ -105,8 +110,13 @@ def count_by_id():
 def best_girl_view(request):
     list_card = count_by_id()
     list_girl = count_by_name()
-    return {'list_card': enumerate(list_card) ,
-            'list_girl': enumerate(list_girl),}
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {
+        'list_card': enumerate(list_card),
+        'list_girl': enumerate(list_girl),
+        'url_prefix': settings['url_prefix'],
+    }
 
 
 conn_err_msg = """\
