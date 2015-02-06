@@ -8,6 +8,13 @@ body {
     font-family: 'Maven Pro', sans-serif;
 }
 
+a {
+    color: @MainColor;
+    &:hover, &:focus {
+	color: lighten(@MainColor, 20%);
+    }
+}
+
 main.container {
     background-color: rgba(255, 255, 255, 0.8);
     border-top: 0;
@@ -47,6 +54,13 @@ h1 {
 button.panel-schoolidol {
     img {
 	min-height: 400px;
+    }
+}
+
+.link {
+    text-align: left;
+    &.right {
+	text-align: right;
     }
 }
 

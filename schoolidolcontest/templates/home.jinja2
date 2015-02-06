@@ -17,6 +17,7 @@
 	  <strong>#{{ cards.left.id }} {{ cards.left.name.split(' ')[-1]  }} is BEST</strong>
 	</div>
       </button> <!-- panel -->
+      <div class="link left"><a class="text-center" href="{{ cards.left.website_url }}" target="_blank">About this card</a></div>
     </div> <!-- col -->
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="right" id="right">
@@ -27,6 +28,7 @@
 	  <strong>#{{ cards.right.id }} {{ cards.right.name.split(' ')[-1] }} is BEST</strong>
 	</div>
       </button> <!-- panel -->
+      <div class="link right"><a class="text-center" href="{{ cards.right.website_url }}" target="_blank">About this card</a></div>
     </div> <!-- col -->
   </div> <!-- row -->
 </form>
