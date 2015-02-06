@@ -29,7 +29,7 @@ def get_cards(left_id, right_id):
     ret = dict()
     r = ApiRequest()
     ret['left'] = r.get('/api/cards/' + str(left_id) + '/?imagedefault=True').json()
-    ret['right'] = r.get('/api/cards/533' + '/?imagedefault=True').json()
+    ret['right'] = r.get('/api/cards/' + str(right_id) + '/?imagedefault=True').json()
     ret['idolized_left'] = random.choice([True, False])
     ret['idolized_right'] = random.choice([True, False])
     return ret
