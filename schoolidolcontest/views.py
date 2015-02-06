@@ -52,12 +52,19 @@ def pick_two_random_cards():
         right_id = random.randint(1, cards['count'])
     return get_cards(left_id, right_id)
 
+def reduce_card(card):
+    new = dict()
+    new['id'] = card['id']
+    new['name'] = card['name']
+    new['rarity'] = card['rarity']
+    return new
+
 @view_config(route_name='home', renderer='templates/home.jinja2')
 def my_view(request):
     session = request.session
     cards = pick_two_random_cards()
-    session['left'] = cards['left']
-    session['right'] = cards['right']
+    session['left'] = reduce_card(cards['left'])
+    session['right'] = reduce_card(cards['right'])
     session['idolized_left'] = cards['idolized_left']
     session['idolized_right'] = cards['idolized_right']
     registry = pyramid.threadlocal.get_current_registry()
