@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="{{ url_prefix }}static/bower/bootstrap/dist/css/bootstrap.min.css">
     <link href="{{ url_prefix }}static/bower/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/flaticon.css">
     <!-- <link rel="stylesheet/less" type="text/css" href="{{ url_prefix }}static/less/style.less" /> -->
     <!-- <script src="{{ url_prefix }}static/bower/less/dist/less.min.js"></script> -->
     <link rel="stylesheet" href="{{ url_prefix }}static/css/style.css">
@@ -28,11 +29,19 @@
 	    <span class="icon-bar"></span>
 	    <span class="icon-bar"></span>
 	  </button>
-	  <a class="navbar-brand" href="/">{{ mainTitle }}</a>
+	  <a class="navbar-brand" href="/"><i class="flaticon-back"></i> {{ mainTitle }}</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right collapse navbar-collapse">
 	  <li><a href="{{ url_prefix }}">Vote</a></li>
 	  <li><a href="{{ url_prefix }}best">Ranking</a></li>
+	  <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+	      <span class="caret"></span>
+	    </a>
+	    <ul class="dropdown-menu" role="menu">
+	      <li><a href="/#aboutModal" target="_blank"><i class="flaticon-about"></i> About</a></li>
+	      <li><a href="/#contactModal" target="_blank"><i class="flaticon-contact"></i> Contact</a></li>
+	      <li><a href="/#developersModal" target="_blank"><i class="flaticon-developer"></i> Developers</a></li>
+	    </ul>
 	</ul>
       </div>
     </nav>
