@@ -91,7 +91,9 @@ def vote_view(request):
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
-    return HTTPFound(location='/')
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return HTTPFound(location=settings['url_prefix'])
 
 def count_by_name():
     r = ApiRequest()
@@ -134,4 +136,3 @@ might be caused by one of the following things:
 After you fix the problem, please restart the Pyramid application to
 try it again.
 """
-
