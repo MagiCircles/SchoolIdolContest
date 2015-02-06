@@ -28,8 +28,8 @@ class ApiRequest(object):
 def get_cards(left_id, right_id):
     ret = dict()
     r = ApiRequest()
-    ret['left'] = r.get('/api/cards/' + str(left_id) + '/').json()
-    ret['right'] = r.get('/api/cards/' + str(right_id) + '/').json()
+    ret['left'] = r.get('/api/cards/' + str(left_id) + '/?imagedefault=True').json()
+    ret['right'] = r.get('/api/cards/533' + '/?imagedefault=True').json()
     ret['idolized_left'] = random.choice([True, False])
     ret['idolized_right'] = random.choice([True, False])
     return ret
@@ -99,13 +99,13 @@ def count_by_name():
     r = ApiRequest()
     req = DBSession.query(Vote,
                           func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/').json()) for (i, _) in req[:10]]
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/?imagedefault=True').json()) for (i, _) in req[:10]]
     return l
 
 def count_by_id():
     r = ApiRequest()
     req = DBSession.query(Vote).order_by('counter DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/').json()) for i in req[:10]]
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/?imagedefault=True').json()) for i in req[:10]]
     return l
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
