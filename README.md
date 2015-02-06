@@ -31,4 +31,15 @@ lessc --compress schoolidolcontest/static/less/style.less > schoolidolcontest/st
 pserve development.ini --reload
 ```
 
+Screenshots
+===========
+
+Vote
+-----
+
 ![School Idol Contest COCOisBEST](http://i.imgur.com/awingob.png)
+
+Ranking
+-------
+
+![School Idol Contest COCOisBEST](http://i.imgur.com/Gzq2a8Y.png)
