@@ -106,13 +106,15 @@ def count_by_name():
     r = ApiRequest()
     req = DBSession.query(Vote,
                           func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/?imagedefault=True').json()) for (i, _) in req[:10]]
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
+                            '/?imagedefault=True').json(), c) for (i, c) in req[:10]]
     return l
 
 def count_by_id():
     r = ApiRequest()
     req = DBSession.query(Vote).order_by('counter DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) + '/?imagedefault=True').json()) for i in req[:10]]
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
+                            '/?imagedefault=True').json(), i.counter) for i in req[:10]]
     return l
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
