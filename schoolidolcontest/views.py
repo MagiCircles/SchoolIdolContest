@@ -67,7 +67,7 @@ def my_view(request):
     session['right'] = reduce_card(cards['right'])
     session['idolized_left'] = cards['idolized_left']
     session['idolized_right'] = cards['idolized_right']
-    token = session.get_csrf_token()
+    token = session.new_csrf_token()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
