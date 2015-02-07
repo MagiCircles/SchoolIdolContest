@@ -80,6 +80,7 @@ def vote_view(request):
     if ('left' or 'right' in request.params) and ('left' or 'right' in session):
         card = session['left'] if 'left' in request.params else session['right']
         idolized = session['idolized_left'] if 'left' in request.params else session['idolized_right']
+        session.invalidate()
         card_id = card['id']
         name = card['name']
         rarity = card['rarity']
