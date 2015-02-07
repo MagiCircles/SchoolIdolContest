@@ -87,13 +87,13 @@ def vote_view(request):
             return HTTPFound(location=settings['url_prefix'])
         card = session['left'] if 'left' in request.params else session['right']
         idolized = session['idolized_left'] if 'left' in request.params else session['idolized_right']
-        session.invalidate()
         card_id = card['id']
         name = card['name']
         rarity = card['rarity']
         id_contest = 0
-        del session['left']
-        del session['right']
+        if 'left' in session: del session['left']
+        if 'right' in session: del session['right']
+        session.invalidate()
         try:
             req = DBSession.query(Vote).filter_by(id_card=card_id,
                                                id_contest=id_contest,
