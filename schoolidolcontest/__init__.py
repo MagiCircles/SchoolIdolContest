@@ -2,7 +2,6 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.session import SignedCookieSessionFactory
 
-my_session_factory = SignedCookieSessionFactory('itsaseekreet')
 
 from .models import (
     DBSession,
@@ -19,8 +18,8 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     config = Configurator(settings=settings)
-    config.set_session_factory(my_session_factory)
     config.include('pyramid_jinja2')
+    config.include('pyramid_beaker')
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('bestgirl', '/best')
