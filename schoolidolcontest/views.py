@@ -92,6 +92,8 @@ def vote_view(request):
         name = card['name']
         rarity = card['rarity']
         id_contest = 0
+        del session['left']
+        del session['right']
         try:
             req = DBSession.query(Vote).filter_by(id_card=card_id,
                                                id_contest=id_contest,
