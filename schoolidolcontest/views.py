@@ -78,6 +78,9 @@ def my_view(request):
 def vote_view(request):
     session = request.session
     if ('left' or 'right' in request.params) and ('left' or 'right' in session):
+        token = request.session.get_csrf_token()
+        if token != request.POST['csrf_token']:
+            return HTTPFound(location=settings['url_prefix'])
         card = session['left'] if 'left' in request.params else session['right']
         idolized = session['idolized_left'] if 'left' in request.params else session['idolized_right']
         session.invalidate()
