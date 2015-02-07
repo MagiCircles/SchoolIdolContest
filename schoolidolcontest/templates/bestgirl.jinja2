@@ -13,7 +13,7 @@
 	<strong>BEST Girls</strong>
       </div>
       <div class="panel-body">
-	{% for (idx, (idolized, card)) in list_girl %}
+	{% for (idx, (idolized, card, count)) in list_girl %}
 	<a class="row" href="http://schoolido.lu/cards/?name={{ card.name }}" target="_blank">
 	  <div class="col-sm-2">
 	    <div class="rank">
@@ -28,7 +28,8 @@
 	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_image if (idolized or not card.card_image) else card.card_image }}')"></div>
 	    </div>
 	    <div class="name name-card">
-	      <strong>{{ card.name }}</strong><br />
+	      <strong>{{ card.name }}</strong>
+	      <small>{{ count }} votes</small>
 	    </div>
 	  </div>
 	</a>
@@ -42,7 +43,7 @@
 	<strong>BEST Cards</strong>
       </div>
       <div class="panel-body">
-	{% for (idx, (idolized, card)) in list_card %}
+	{% for (idx, (idolized, card, count)) in list_card %}
 	<a class="row" href="http://schoolido.lu/cards/{{ card.id }}/" target="_blank">
 	  <div class="col-sm-2">
 	    <div class="rank">
@@ -59,6 +60,7 @@
 	    <div class="name">
 	      <strong>{{ card.name }}</strong><br />
 	      #{{ card.id }} {{ "idolized" if idolized }}
+	      <small>{{ count }} votes</small>
 	    </div>
 	  </div>
 	</a>
