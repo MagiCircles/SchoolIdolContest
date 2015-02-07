@@ -28,8 +28,8 @@
 	      <div class="card border-{{ card.attribute }}" style="background-image: url('{{ card.card_idolized_image if (idolized or not card.card_image) else card.card_image }}')"></div>
 	    </div>
 	    <div class="name name-card">
-	      <strong>{{ card.name }}</strong><br />
-        Score: {{ count }}
+	      <strong>{{ card.name }}</strong>
+	      <small>{{ count }} votes</small>
 	    </div>
 	  </div>
 	</a>
@@ -60,7 +60,7 @@
 	    <div class="name">
 	      <strong>{{ card.name }}</strong><br />
 	      #{{ card.id }} {{ "idolized" if idolized }}
-        Score: {{ count }}
+	      <small>{{ count }} votes</small>
 	    </div>
 	  </div>
 	</a>
