@@ -67,18 +67,22 @@ def my_view(request):
     session['right'] = reduce_card(cards['right'])
     session['idolized_left'] = cards['idolized_left']
     session['idolized_right'] = cards['idolized_right']
+    token = session.get_csrf_token()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
         'cards': cards,
         'url_prefix': settings['url_prefix'],
+        'csrf_token': token,
     }
 
 @view_config(route_name='vote')
 def vote_view(request):
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
     session = request.session
     if ('left' or 'right' in request.params) and ('left' or 'right' in session):
-        token = request.session.get_csrf_token()
+        token = session.get_csrf_token()
         if token != request.POST['csrf_token']:
             return HTTPFound(location=settings['url_prefix'])
         card = session['left'] if 'left' in request.params else session['right']
@@ -102,8 +106,6 @@ def vote_view(request):
         except DBAPIError:
             return Response(conn_err_msg, content_type='text/plain',
                             status_int=500)
-    registry = pyramid.threadlocal.get_current_registry()
-    settings = registry.settings
     return HTTPFound(location=settings['url_prefix'])
 
 def count_by_name():
