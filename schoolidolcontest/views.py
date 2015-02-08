@@ -93,6 +93,8 @@ def vote_view(request):
             return HTTPFound(location=settings['url_prefix'])
         with transaction.manager:
             vote = DBSession.query(VoteSession).filter_by(id=session['id']).first()
+            if not vote:
+                return HTTPFound(location=settings['url_prefix'])
             card_id = vote.left_id if 'left' in request.params else vote.right_id
             name = vote.left_name if 'left' in request.params else vote.right_name
             rarity = vote.left_rarity if 'left' in request.params else vote.right_rarity
