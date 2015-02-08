@@ -38,5 +38,18 @@ class Contest(Base):
     end = Column(Date)
     best_girl = Column(Boolean)
 
+class VoteSession(Base):
+    __tablename__ = 'votesession'
+    id = Column(Integer, primary_key=True)
+    created = Column(Date)
+    contest = Column(Integer)
+    left_id = Column(Integer)
+    right_id = Column(Integer)
+    left_rarity = Column(Text)
+    right_rarity = Column(Text)
+    left_name = Column(Text)
+    right_name = Column(Text)
+    left_idolized = Column(Boolean)
+    right_idolized = Column(Boolean)
 
 #Index('my_index', Vote.name, unique=True, mysql_length=255)

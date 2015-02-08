@@ -1,5 +1,6 @@
 import requests
 import random
+import datetime
 
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -13,6 +14,7 @@ import transaction
 from .models import (
     DBSession,
     Vote,
+    VoteSession,
     )
 
 class ApiRequest(object):
@@ -52,21 +54,25 @@ def pick_two_random_cards():
         right_id = random.randint(1, cards['count'])
     return get_cards(left_id, right_id)
 
-def reduce_card(card):
-    new = dict()
-    new['id'] = card['id']
-    new['name'] = card['name']
-    new['rarity'] = card['rarity']
-    return new
-
 @view_config(route_name='home', renderer='templates/home.jinja2')
 def my_view(request):
     session = request.session
     cards = pick_two_random_cards()
-    session['left'] = reduce_card(cards['left'])
-    session['right'] = reduce_card(cards['right'])
-    session['idolized_left'] = cards['idolized_left']
-    session['idolized_right'] = cards['idolized_right']
+
+    with transaction.manager:
+        model = VoteSession(left_id = cards['left']['id'],
+                            right_id = cards['right']['id'],
+                            left_name = cards['left']['name'],
+                            right_name = cards['right']['name'],
+                            left_rarity = cards['left']['rarity'],
+                            right_rarity = cards['right']['rarity'],
+                            left_idolized = cards['idolized_left'],
+                            right_idolized = cards['idolized_right'],
+                            created = datetime.datetime.now(),
+                            contest = 0)
+        DBSession.add(model)
+        DBSession.flush()
+        session['id'] = model.id
     token = session.new_csrf_token()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
@@ -81,20 +87,18 @@ def vote_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     session = request.session
-    if ('left' or 'right' in request.params) and ('left' or 'right' in session):
+    if ('left' or 'right' in request.params) and 'id' in session:
         token = session.get_csrf_token()
         if token != request.POST['csrf_token']:
             return HTTPFound(location=settings['url_prefix'])
-        card = session['left'] if 'left' in request.params else session['right']
-        idolized = session['idolized_left'] if 'left' in request.params else session['idolized_right']
-        card_id = card['id']
-        name = card['name']
-        rarity = card['rarity']
-        id_contest = 0
-        if 'left' in session: del session['left']
-        if 'right' in session: del session['right']
-        session.invalidate()
-        try:
+        with transaction.manager:
+            vote = DBSession.query(VoteSession).filter_by(id=session['id']).first()
+            card_id = vote.left_id if 'left' in request.params else vote.right_id
+            name = vote.left_name if 'left' in request.params else vote.right_name
+            rarity = vote.left_rarity if 'left' in request.params else vote.right_rarity
+            idolized = vote.left_idolized if 'left' in request.params else vote.right_idolized
+            id_contest = vote.contest
+            DBSession.delete(vote)
             req = DBSession.query(Vote).filter_by(id_card=card_id,
                                                id_contest=id_contest,
                                                idolized=idolized).first()
@@ -105,9 +109,7 @@ def vote_view(request):
             else:
                 req.counter += 1
                 DBSession.add(req)
-        except DBAPIError:
-            return Response(conn_err_msg, content_type='text/plain',
-                            status_int=500)
+    session.invalidate()
     return HTTPFound(location=settings['url_prefix'])
 
 def count_by_name():
