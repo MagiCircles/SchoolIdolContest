@@ -47,7 +47,7 @@ def filter_two_random_cards(*args, **kwargs):
 
 def pick_two_random_cards():
     r = ApiRequest()
-    cards = r.get('/api/cards', params={'page_size': 1}).json()
+    cards = r.get('/api/cards/', params={'page_size': 1}).json()
     left_id = random.randint(1, cards['count'])
     right_id = random.randint(1, cards['count'])
     while (left_id == right_id):
