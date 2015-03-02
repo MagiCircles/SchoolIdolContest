@@ -36,7 +36,7 @@ class Contest(Base):
     params = Column(Text)
     begin = Column(Date)
     end = Column(Date)
-    best_girl = Column(Boolean)
+    result_type = Column(Text)
 
 class VoteSession(Base):
     __tablename__ = 'votesession'

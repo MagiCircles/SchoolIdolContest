@@ -15,6 +15,7 @@ from .models import (
     DBSession,
     Vote,
     VoteSession,
+    Contest,
     )
 
 class ApiRequest(object):
@@ -53,34 +54,6 @@ def pick_two_random_cards():
     while (left_id == right_id):
         right_id = random.randint(1, cards['count'])
     return get_cards(left_id, right_id)
-
-@view_config(route_name='home', renderer='templates/home.jinja2')
-def my_view(request):
-    session = request.session
-    cards = pick_two_random_cards()
-
-    with transaction.manager:
-        model = VoteSession(left_id = cards['left']['id'],
-                            right_id = cards['right']['id'],
-                            left_name = cards['left']['name'],
-                            right_name = cards['right']['name'],
-                            left_rarity = cards['left']['rarity'],
-                            right_rarity = cards['right']['rarity'],
-                            left_idolized = cards['idolized_left'],
-                            right_idolized = cards['idolized_right'],
-                            created = datetime.datetime.now(),
-                            contest = 0)
-        DBSession.add(model)
-        DBSession.flush()
-        session['id'] = model.id
-    token = session.new_csrf_token()
-    registry = pyramid.threadlocal.get_current_registry()
-    settings = registry.settings
-    return {
-        'cards': cards,
-        'url_prefix': settings['url_prefix'],
-        'csrf_token': token,
-    }
 
 @view_config(route_name='vote')
 def vote_view(request):
@@ -141,19 +114,57 @@ def best_girl_view(request):
         'url_prefix': settings['url_prefix'],
     }
 
+def pick_two_random_cards_query(params):
+    r = ApiRequest()
+    cards = r.get('/api/cardids/' + params).json()
+    left_id = random.choice(cards)
+    right_id = random.choice(cards)
+    while (left_id == right_id):
+        right_id = random.choise(cards)
+    return get_cards(left_id, right_id)
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
+def vote_page_view(request, contest=None):
+    session = request.session
+    now = datetime.datetime.now()
+    #contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
+    if contest:
+        cards = pick_two_random_cards_query(contest.params)
+    else:
+        cards = pick_two_random_cards()
+    with transaction.manager:
+        model = VoteSession(left_id = cards['left']['id'],
+                            right_id = cards['right']['id'],
+                            left_name = cards['left']['name'],
+                            right_name = cards['right']['name'],
+                            left_rarity = cards['left']['rarity'],
+                            right_rarity = cards['right']['rarity'],
+                            left_idolized = cards['idolized_left'],
+                            right_idolized = cards['idolized_right'],
+                            created = now,
+                            contest = contest.id if contest else 0)
+        DBSession.add(model)
+        DBSession.flush()
+        session['id'] = model.id
+    token = session.new_csrf_token()
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return cards, settings, token
 
-1.  You may need to run the "initialize_SchoolIdolContest_db" script
-    to initialize your database tables.  Check your virtual
-    environment's "bin" directory for this script and try to run it.
+@view_config(route_name='home', renderer='templates/home.jinja2')
+def main_vote_view(request):
+   cards, settings, token = vote_page_view(request)
+   return {
+        'cards': cards,
+        'url_prefix': settings['url_prefix'],
+        'csrf_token': token,
+    }
 
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
-
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
+@view_config(route_name='contest', renderer='templates/home.jinja2')
+def contest_vote_view(request):
+    contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
+    cards, settings, token = vote_page_view(request, contest=contest)
+    return {
+        'cards': cards,
+        'url_prefix': settings['url_prefix'],
+        'csrf_token': token,
+    }
