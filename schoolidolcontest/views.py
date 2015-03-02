@@ -55,6 +55,15 @@ def pick_two_random_cards():
         right_id = random.randint(1, cards['count'])
     return get_cards(left_id, right_id)
 
+def pick_two_random_cards_query(params):
+    r = ApiRequest()
+    cards = r.get('/api/cardids/' + params).json()
+    left_id = random.choice(cards)
+    right_id = random.choice(cards)
+    while (left_id == right_id):
+        right_id = random.choise(cards)
+    return get_cards(left_id, right_id)
+
 @view_config(route_name='vote')
 def vote_view(request):
     registry = pyramid.threadlocal.get_current_registry()
@@ -114,19 +123,9 @@ def best_girl_view(request):
         'url_prefix': settings['url_prefix'],
     }
 
-def pick_two_random_cards_query(params):
-    r = ApiRequest()
-    cards = r.get('/api/cardids/' + params).json()
-    left_id = random.choice(cards)
-    right_id = random.choice(cards)
-    while (left_id == right_id):
-        right_id = random.choise(cards)
-    return get_cards(left_id, right_id)
-
 def vote_page_view(request, contest=None):
     session = request.session
     now = datetime.datetime.now()
-    #contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
     if contest:
         cards = pick_two_random_cards_query(contest.params)
     else:
