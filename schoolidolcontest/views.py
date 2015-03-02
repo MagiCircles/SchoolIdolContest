@@ -18,6 +18,8 @@ from .models import (
     Contest,
     )
 
+# Helpers
+
 class ApiRequest(object):
     def __init__(self):
         registry = pyramid.threadlocal.get_current_registry()
@@ -64,8 +66,28 @@ def pick_two_random_cards_query(params):
         right_id = random.choise(cards)
     return get_cards(left_id, right_id)
 
+def count_by_name():
+    r = ApiRequest()
+    req = DBSession.query(Vote,
+                          func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
+                            '/?imagedefault=True').json(), c) for (i, c) in req[:10]]
+    return l
+
+def count_by_id():
+    r = ApiRequest()
+    req = DBSession.query(Vote).order_by('counter DESC').all()
+    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
+                            '/?imagedefault=True').json(), i.counter) for i in req[:10]]
+    return l
+
+# Functions related to views themselves
+
 @view_config(route_name='vote')
 def vote_view(request):
+    """
+    Route validating a vote
+    """
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     session = request.session
@@ -96,23 +118,11 @@ def vote_view(request):
     session.invalidate()
     return HTTPFound(location=settings['url_prefix'])
 
-def count_by_name():
-    r = ApiRequest()
-    req = DBSession.query(Vote,
-                          func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
-                            '/?imagedefault=True').json(), c) for (i, c) in req[:10]]
-    return l
-
-def count_by_id():
-    r = ApiRequest()
-    req = DBSession.query(Vote).order_by('counter DESC').all()
-    l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
-                            '/?imagedefault=True').json(), i.counter) for i in req[:10]]
-    return l
-
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
 def best_girl_view(request):
+    """
+    The Best Girl page
+    """
     list_card = count_by_id()
     list_girl = count_by_name()
     registry = pyramid.threadlocal.get_current_registry()
@@ -124,6 +134,9 @@ def best_girl_view(request):
     }
 
 def vote_page_view(request, contest=None):
+    """
+    Function used to get informations used to generate voting pages
+    """
     session = request.session
     now = datetime.datetime.now()
     if contest:
@@ -151,8 +164,11 @@ def vote_page_view(request, contest=None):
 
 @view_config(route_name='home', renderer='templates/home.jinja2')
 def main_vote_view(request):
-   cards, settings, token = vote_page_view(request)
-   return {
+    """
+    The main page, random voting on the whole collection
+    """
+    cards, settings, token = vote_page_view(request)
+    return {
         'cards': cards,
         'url_prefix': settings['url_prefix'],
         'csrf_token': token,
@@ -160,6 +176,9 @@ def main_vote_view(request):
 
 @view_config(route_name='contest', renderer='templates/home.jinja2')
 def contest_vote_view(request):
+    """
+    The contest voting page: vote for the current contest
+    """
     contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
     cards, settings, token = vote_page_view(request, contest=contest)
     return {
