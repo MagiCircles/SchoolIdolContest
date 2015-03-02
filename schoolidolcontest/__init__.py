@@ -25,5 +25,6 @@ def main(global_config, **settings):
     config.add_route('bestgirl', '/best')
     config.add_route('vote', '/__vote')
     config.add_route('contest', '/contest')
+    config.add_route('result', '/result/{id}')
     config.scan()
     return config.make_wsgi_app()

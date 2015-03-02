@@ -66,17 +66,16 @@ def pick_two_random_cards_query(params):
         right_id = random.choise(cards)
     return get_cards(left_id, right_id)
 
-def count_by_name():
+def count_by_name(contest=0):
     r = ApiRequest()
-    req = DBSession.query(Vote,
-                          func.sum(Vote.counter).label('counter_all')).group_by(Vote.name).order_by('counter_all DESC').all()
+    req = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == contest).group_by(Vote.name).order_by('counter_all DESC').all()
     l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
                             '/?imagedefault=True').json(), c) for (i, c) in req[:10]]
     return l
 
-def count_by_id():
+def count_by_id(contest=0):
     r = ApiRequest()
-    req = DBSession.query(Vote).order_by('counter DESC').all()
+    req = DBSession.query(Vote).filter(Vote.id_contest == contest).order_by('counter DESC').all()
     l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
                             '/?imagedefault=True').json(), i.counter) for i in req[:10]]
     return l
@@ -133,6 +132,32 @@ def best_girl_view(request):
         'url_prefix': settings['url_prefix'],
     }
 
+@view_config(route_name='result', renderer='templates/bestgirl.jinja2')
+def contest_result_view(request):
+    """
+    The contest result
+    """
+    results = list()
+    di = request.matchdict
+    id = di.get("id", None)
+    if id and id.isdigit():
+        id = int(id)
+    contest = DBSession.query(Contest).filter(Contest.id == id).first()
+    columns = contest.result_type.split()
+    for col in columns:
+        if col == 'best_girl':
+            results.append(count_by_name(contest.id))
+        elif col == 'best_card':
+            results.append(count_by_id(contest.id))
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {
+        'list_card': enumerate(results[0]),
+        'list_girl': enumerate(results[1]),
+        'url_prefix': settings['url_prefix'],
+    }
+
+
 def vote_page_view(request, contest=None):
     """
     Function used to get informations used to generate voting pages
@@ -179,6 +204,7 @@ def contest_vote_view(request):
     """
     The contest voting page: vote for the current contest
     """
+    now = datetime.datetime.now()
     contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
     cards, settings, token = vote_page_view(request, contest=contest)
     return {
