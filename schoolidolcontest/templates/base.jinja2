@@ -33,8 +33,10 @@
 	  <a class="navbar-brand" href="/"><i class="flaticon-back"></i> {{ mainTitle }}</a>
 	</div>
 	<ul class="nav navbar-nav navbar-right collapse navbar-collapse">
-	  <li><a href="{{ url_prefix }}">Vote</a></li>
-	  <li><a href="{{ url_prefix }}best">Ranking</a></li>
+    <li><a href="{{ url_prefix }}contest">{{ contest.name }}</a></li>
+    <li><a href="{{ url_prefix }}result/{{contest.id}}">Contest Ranking</a></li>
+	  <li><a href="{{ url_prefix }}">Global Facemash</a></li>
+	  <li><a href="{{ url_prefix }}best">Global Ranking</a></li>
 	  <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 	      <span class="caret"></span>
 	    </a>

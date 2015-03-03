@@ -5,8 +5,10 @@
 {% block content %}
 
 <h1>Ranking</h1>
+<h2>{{ title }}</h2>
 
 <div class="row">
+  {% if list_girl %}
   <div class="col-md-6">
     <div class="panel panel-schoolidol ranking">
       <div class="panel-heading">
@@ -33,11 +35,14 @@
 	    </div>
 	  </div>
 	</a>
-	{% endfor %}
+  {% endfor %}
+
       </div> <!-- panel-body -->
     </div> <!-- panel -->
   </div> <!-- col -->
   <div class="col-md-6">
+    {% endif %}
+    {% if list_card %}
     <div class="panel panel-schoolidol ranking">
       <div class="panel-heading">
 	<strong>BEST Cards</strong>
@@ -68,5 +73,5 @@
       </div> <!-- panel-body -->
     </div> <!-- panel -->
   </div> <!-- col -->
-
+    {% endif %}
 {% endblock %}

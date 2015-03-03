@@ -30,6 +30,11 @@ class ApiRequest(object):
     def get(self, path, *args, **kwargs):
         return self.session.get(self.api_url + path, **kwargs)
 
+def get_current_contest():
+    now = datetime.datetime.now()
+    contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
+    return contest
+
 def get_cards(left_id, right_id):
     ret = dict()
     r = ApiRequest()
@@ -90,6 +95,7 @@ def vote_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     session = request.session
+    forward = settings['url_prefix']
     if ('left' or 'right' in request.params) and 'id' in session:
         token = session.get_csrf_token()
         if token != request.POST['csrf_token']:
@@ -103,6 +109,8 @@ def vote_view(request):
             rarity = vote.left_rarity if 'left' in request.params else vote.right_rarity
             idolized = vote.left_idolized if 'left' in request.params else vote.right_idolized
             id_contest = vote.contest
+            if id_contest != 0:
+                forward = forward + 'contest'
             DBSession.delete(vote)
             req = DBSession.query(Vote).filter_by(id_card=card_id,
                                                id_contest=id_contest,
@@ -115,7 +123,7 @@ def vote_view(request):
                 req.counter += 1
                 DBSession.add(req)
     session.invalidate()
-    return HTTPFound(location=settings['url_prefix'])
+    return HTTPFound(location=forward)
 
 @view_config(route_name='bestgirl', renderer='templates/bestgirl.jinja2')
 def best_girl_view(request):
@@ -126,7 +134,10 @@ def best_girl_view(request):
     list_girl = count_by_name()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
+    contest = get_current_contest()
     return {
+        'contest': contest,
+        'title': 'Global Ranking',
         'list_card': enumerate(list_card),
         'list_girl': enumerate(list_girl),
         'url_prefix': settings['url_prefix'],
@@ -137,26 +148,27 @@ def contest_result_view(request):
     """
     The contest result
     """
-    results = list()
     di = request.matchdict
     id = di.get("id", None)
     if id and id.isdigit():
         id = int(id)
     contest = DBSession.query(Contest).filter(Contest.id == id).first()
     columns = contest.result_type.split()
+    list_girl, list_card = None, None
     for col in columns:
         if col == 'best_girl':
-            results.append(count_by_name(contest.id))
+            list_girl = enumerate(count_by_name(contest.id))
         elif col == 'best_card':
-            results.append(count_by_id(contest.id))
+            list_card = enumerate(count_by_id(contest.id))
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
-        'list_card': enumerate(results[0]),
-        'list_girl': enumerate(results[1]),
+        'contest': contest,
+        'title': contest.name,
+        'list_card': list_card,
+        'list_girl': list_girl,
         'url_prefix': settings['url_prefix'],
     }
-
 
 def vote_page_view(request, contest=None):
     """
@@ -193,7 +205,11 @@ def main_vote_view(request):
     The main page, random voting on the whole collection
     """
     cards, settings, token = vote_page_view(request)
+    contest = get_current_contest()
+    title = 'Which card is better?'
     return {
+        'contest': contest,
+        'title': title,
         'cards': cards,
         'url_prefix': settings['url_prefix'],
         'csrf_token': token,
@@ -205,10 +221,30 @@ def contest_vote_view(request):
     The contest voting page: vote for the current contest
     """
     now = datetime.datetime.now()
-    contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
+    contest = get_current_contest()
     cards, settings, token = vote_page_view(request, contest=contest)
+    title = contest.name
     return {
+        'contest': contest,
+        'title': title,
         'cards': cards,
         'url_prefix': settings['url_prefix'],
         'csrf_token': token,
+    }
+
+
+@view_config(route_name='results', renderer='templates/contests_listing.jinja2')
+def list_results_view(request):
+    """
+    List the old contests results
+    """
+    contests = DBSession.query(Contest).all()
+    contest = contests[0]
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {
+        'contest': contest,
+        'contests': contests,
+        'url_prefix': settings['url_prefix'],
+        'title': 'Contests listing',
     }
