@@ -266,9 +266,6 @@ def list_results_view(request):
 
 @view_config(route_name='json_id', renderer='json')
 def json_id_view(request):
-    """
-    List the old contests results
-    """
     di = request.matchdict
     id = di.get("id", None)
     if id and id.isdigit():
@@ -279,3 +276,14 @@ def json_id_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {'id': id, 'count': vote.counter}
+
+@view_config(route_name='json_name', renderer='json')
+def json_id_view(request):
+    di = request.matchdict
+    name = di.get("name", None)
+    vote = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == contest, Vote.name == name).first()
+    if not vote:
+        return {}
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {'name': name, 'count': vote.counter}
