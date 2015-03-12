@@ -11,7 +11,7 @@
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="left" value="" id="left">
 	<div class="panel-body">
-	  <img src="{{ cards.left.card_image if cards.left.card_image and idolized_left else cards.left.card_idolized_image }}">
+	  <img src="{{ cards.left.card_image if cards.left.card_image and not idolized_left else cards.left.card_idolized_image }}">
 	</div>
 	<div class="panel-heading">
 	  <strong>#{{ cards.left.id }} {{ cards.left.name.split(' ')[-1]  }} is BEST</strong>
@@ -22,7 +22,7 @@
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="right" id="right">
 	<div class="panel-body">
-	  <img src="{{ cards.right.card_image if cards.right.card_image and idolized_right else cards.right.card_idolized_image }}">
+	  <img src="{{ cards.right.card_image if cards.right.card_image and not idolized_right else cards.right.card_idolized_image }}">
 	</div>
 	<div class="panel-heading">
 	  <strong>#{{ cards.right.id }} {{ cards.right.name.split(' ')[-1] }} is BEST</strong>
