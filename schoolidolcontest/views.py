@@ -4,7 +4,7 @@ import datetime
 
 from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 import pyramid.threadlocal
 
 from sqlalchemy.exc import DBAPIError
@@ -238,8 +238,7 @@ def list_results_view(request):
     """
     List the old contests results
     """
-    contests = DBSession.query(Contest).all()
-    contest = contests[0]
+    contest = get_current_contest()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
@@ -248,3 +247,35 @@ def list_results_view(request):
         'url_prefix': settings['url_prefix'],
         'title': 'Contests listing',
     }
+
+
+@view_config(route_name='results', renderer='templates/contests_listing.jinja2')
+def list_results_view(request):
+    """
+    List the old contests results
+    """
+    contest = get_current_contest()
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {
+        'contest': contest,
+        'contests': contests,
+        'url_prefix': settings['url_prefix'],
+        'title': 'Contests listing',
+    }
+
+@view_config(route_name='json_id', renderer='json')
+def json_id_view(request):
+    """
+    List the old contests results
+    """
+    di = request.matchdict
+    id = di.get("id", None)
+    if id and id.isdigit():
+        id = int(id)
+    vote = DBSession.query(Vote).filter(Vote.id_contest == 0, Vote.id_card == id).first()
+    if not vote:
+        return {}
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {'id': id, 'count': vote.counter}
