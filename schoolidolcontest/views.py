@@ -68,7 +68,7 @@ def pick_two_random_cards_query(params):
     left_id = random.choice(cards)
     right_id = random.choice(cards)
     while (left_id == right_id):
-        right_id = random.choise(cards)
+        right_id = random.choice(cards)
     return get_cards(left_id, right_id)
 
 def count_by_name(contest=0):
