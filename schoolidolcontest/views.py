@@ -89,6 +89,10 @@ def count_by_id(contest=0):
                             '/?imagedefault=True').json(), i.counter) for i in req[:10]]
     return l
 
+def count_contest_votes(contest):
+    count = DBSession.query(func.sum(Vote.counter)).filter(Vote.id_contest == contest).first()
+    return count[0]
+
 # Functions related to views themselves
 
 @view_config(route_name='vote')
@@ -258,6 +262,8 @@ def list_results_view(request):
     contests = DBSession.query(Contest).all()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
+    for c in contests:
+        c.total_count = count_contest_votes(c.id)
     return {
         'current_contest': current_contest,
         'contests': contests,
