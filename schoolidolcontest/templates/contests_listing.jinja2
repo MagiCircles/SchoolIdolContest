@@ -1,0 +1,17 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Contests listing{% endblock %}
+
+{% block content %}
+
+<h1>Contests listing</h1>
+<div class="row">
+{% for contest in contests %}
+<a class="row" href="http://schoolido.lu/result/{{ contest.id }}" target="_blank">
+  <div class="name name-card">
+    <strong>{{ contest.name }}</strong>
+  </div>
+</a>
+{% endfor %}
+</div> <!-- div-row -->
+{% endblock %}
