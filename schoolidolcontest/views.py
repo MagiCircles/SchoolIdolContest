@@ -239,6 +239,7 @@ def list_results_view(request):
     List the old contests results
     """
     contest = get_current_contest()
+    contests = DBSession.query(Contest).all()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
