@@ -7,7 +7,7 @@
 <h1>Contests listing</h1>
 <div class="row">
 {% for contest in contests %}
-<a class="row" href="http://schoolido.lu/result/{{ contest.id }}" target="_blank">
+<a class="row" href="{{ url_prefix }}result/{{ contest.id }}" target="_blank">
   <div class="name name-card">
     <strong>{{ contest.name }}</strong>
   </div>
