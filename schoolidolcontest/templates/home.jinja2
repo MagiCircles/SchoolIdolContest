@@ -19,6 +19,7 @@
 	</div>
       </button> <!-- panel -->
       <div class="link left"><a class="text-center" href="{{ cards.left.website_url }}" target="_blank">About this card</a></div>
+      <br><br>
     </div> <!-- col -->
     <div class="col-md-6">
       <button type="submit" class="panel panel-schoolidol card" name="right" id="right">
@@ -30,9 +31,15 @@
 	</div>
       </button> <!-- panel -->
       <div class="link right"><a class="text-center" href="{{ cards.right.website_url }}" target="_blank">About this card</a></div>
+      <br><br>
     </div> <!-- col -->
   </div> <!-- row -->
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
 </form>
+
+<br><br>
+<div class="text-center">
+  <a href="{{ url_prefix }}{% if contest %}result/{{ contest.id }}{% else %}best{% endif %}" class="btn btn-main btn-xl">Ranking</a>
+</div>
 
 {% endblock %}

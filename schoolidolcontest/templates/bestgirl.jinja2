@@ -4,8 +4,12 @@
 
 {% block content %}
 
+{% if title %}
+<h1>{{ title }}
+{% if begin %}<br><small>{{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}{% if delta %} &nbsp;&nbsp;&nbsp;<a href="{{ url_prefix }}contest">{% if delta.days == 0 %}{{ (delta.seconds / 3600)|int }} hours left{% else %}{{ delta.days }} days left{% endif %}</a>{% endif %}</small>{% endif %}</h1>
+{% else %}
 <h1>Ranking</h1>
-<h2>{{ title }}</h2>
+{% endif %}
 
 <div class="row">
   {% if list_girl %}
@@ -73,5 +77,12 @@
       </div> <!-- panel-body -->
     </div> <!-- panel -->
   </div> <!-- col -->
-    {% endif %}
+  {% endif %}
+</div> <!-- row -->
+
+{% if contest and not is_current %}{% else %}
+<div class="text-center">
+  <a href="{{ url_prefix }}{% if contest %}contest{% else %}{% endif %}" class="btn btn-block btn-main btn-xl">Vote!</a>
+</div>
+{% endif %}
 {% endblock %}

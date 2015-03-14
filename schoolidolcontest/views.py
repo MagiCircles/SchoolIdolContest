@@ -35,6 +35,10 @@ def get_current_contest():
     contest = DBSession.query(Contest).filter(now <= Contest.end, now >= Contest.begin).first()
     return contest
 
+def is_current_contest(contest):
+    now = datetime.date.today()
+    return now <= contest.end and now >= contest.begin
+
 def get_cards(left_id, right_id):
     ret = dict()
     r = ApiRequest()
@@ -134,10 +138,9 @@ def best_girl_view(request):
     list_girl = count_by_name()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
-    contest = get_current_contest()
+    current_contest = get_current_contest()
     return {
-        'contest': contest,
-        'title': 'Global Ranking',
+        'current_contest': current_contest,
         'list_card': enumerate(list_card),
         'list_girl': enumerate(list_girl),
         'url_prefix': settings['url_prefix'],
@@ -162,9 +165,17 @@ def contest_result_view(request):
             list_card = enumerate(count_by_id(contest.id))
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
+    is_current = is_current_contest(contest)
+    delta = datetime.datetime.combine(contest.end, datetime.datetime.min.time()) - datetime.datetime.now() if is_current else None
+    current_contest = contest if is_current else get_current_contest()
     return {
         'contest': contest,
+        'is_current': is_current,
+        'current_contest': current_contest,
         'title': contest.name,
+        'begin': contest.begin,
+        'end': contest.end,
+        'delta': delta,
         'list_card': list_card,
         'list_girl': list_girl,
         'url_prefix': settings['url_prefix'],
@@ -205,10 +216,10 @@ def main_vote_view(request):
     The main page, random voting on the whole collection
     """
     cards, settings, token = vote_page_view(request)
-    contest = get_current_contest()
+    current_contest = get_current_contest()
     title = 'Which card is better?'
     return {
-        'contest': contest,
+        'current_contest': current_contest,
         'title': title,
         'cards': cards,
         'url_prefix': settings['url_prefix'],
@@ -227,6 +238,7 @@ def contest_vote_view(request):
     delta = datetime.datetime.combine(contest.end, datetime.datetime.min.time()) - datetime.datetime.now()
     return {
         'contest': contest,
+        'current_contest': contest,
         'title': title,
         'cards': cards,
         'begin': contest.begin,
@@ -242,12 +254,12 @@ def list_results_view(request):
     """
     List the old contests results
     """
-    contest = get_current_contest()
+    current_contest = get_current_contest()
     contests = DBSession.query(Contest).all()
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {
-        'contest': contest,
+        'current_contest': current_contest,
         'contests': contests,
         'url_prefix': settings['url_prefix'],
         'title': 'Contests listing',

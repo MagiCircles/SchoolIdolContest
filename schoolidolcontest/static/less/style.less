@@ -15,6 +15,23 @@ a {
     }
 }
 
+.btn-main {
+    color: #fff;
+    background-color: @MainColor;
+    border-color: lighten(@MainColor, 20%);
+    transition: background-color 0.5s;
+    &:hover, &:focus {
+	color: #fff;
+	background-color: lighten(@MainColor, 20%);
+    }
+}
+
+.btn-xl {
+    padding: 20px;
+    font-size: 3em;
+    border-radius: 10px;
+}
+
 .text-main {
     color: @MainColor;
 }

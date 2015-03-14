@@ -45,12 +45,12 @@
 	    </li>
 	  <li>
 	    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-	      {{ contest.name }}
+	      {{ current_contest.name }}
 	      <span class="caret"></span>
 	    </a>
 	    <ul class="dropdown-menu" role="menu">
 	      <li><a href="{{ url_prefix }}contest">Vote!</a></li>
-	      <li><a href="{{ url_prefix }}result/{{contest.id}}">Ranking</a></li>
+	      <li><a href="{{ url_prefix }}result/{{ current_contest.id }}">Ranking</a></li>
 	    </ul>
 	    </li>
 	  <li>
