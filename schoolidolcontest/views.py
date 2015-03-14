@@ -75,16 +75,24 @@ def pick_two_random_cards_query(params):
         right_id = random.choice(cards)
     return get_cards(left_id, right_id)
 
+def best_girl_query(contest):
+    req = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == contest).group_by(Vote.name).order_by('counter_all DESC')
+    return req
+
+def best_card_query(contest):
+    req = DBSession.query(Vote).filter(Vote.id_contest == contest).order_by('counter DESC')
+    return req
+
 def count_by_name(contest=0):
     r = ApiRequest()
-    req = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == contest).group_by(Vote.name).order_by('counter_all DESC').all()
+    req = best_girl_query(contest).all()
     l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
                             '/?imagedefault=True').json(), c) for (i, c) in req[:10]]
     return l
 
 def count_by_id(contest=0):
     r = ApiRequest()
-    req = DBSession.query(Vote).filter(Vote.id_contest == contest).order_by('counter DESC').all()
+    req = best_card_query(contest).all()
     l = [(i.idolized, r.get('/api/cards/' + str(i.id_card) +
                             '/?imagedefault=True').json(), i.counter) for i in req[:10]]
     return l
@@ -92,6 +100,19 @@ def count_by_id(contest=0):
 def count_contest_votes(contest):
     count = DBSession.query(func.sum(Vote.counter)).filter(Vote.id_contest == contest).first()
     return count[0]
+
+def get_winner_cards(contest):
+    r = ApiRequest()
+    result_kinds = contest.result_type.split()
+    best_card, best_girl = None, None
+    for result in result_kinds:
+        if result == 'best_girl':
+            best_girl_vote = best_girl_query(contest.id).first()
+            best_girl = r.get('/api/cards/' + str(best_girl_vote.id_card) + '/?imagedefault=True').json()
+        elif result == 'best_card':
+            best_card_vote = best_card_query(contest.id).first()
+            best_card = r.get('/api/cards/' + str(best_card_vote.id_card) + '/?imagedefault=True').json()
+    return best_card, best_girl
 
 # Functions related to views themselves
 
@@ -263,6 +284,7 @@ def list_results_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     for c in contests:
+        c.best_card, c.best_girl = get_winner_cards(c)
         c.total_count = count_contest_votes(c.id)
     return {
         'current_contest': current_contest,
