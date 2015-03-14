@@ -4,8 +4,9 @@
 
 {% block content %}
 
-<h1>{{ title }}</h1>
-
+<h1>{{ title }}
+{% if begin %}<br><small>{{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}{% if delta %} &nbsp;&nbsp;&nbsp;<span class="text-main">{% if delta.days == 0 %}{{ (delta.seconds / 3600)|int }} hours left{% else %}{{ delta.days }} days left{% endif %}</span>{% endif %}</small>{% endif %}
+</h1>
 <form action="{{ url_prefix }}__vote" method="post">
   <div class="row">
     <div class="col-md-6">

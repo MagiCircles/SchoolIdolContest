@@ -224,10 +224,14 @@ def contest_vote_view(request):
     contest = get_current_contest()
     cards, settings, token = vote_page_view(request, contest=contest)
     title = contest.name
+    delta = datetime.datetime.combine(contest.end, datetime.datetime.min.time()) - datetime.datetime.now()
     return {
         'contest': contest,
         'title': title,
         'cards': cards,
+        'begin': contest.begin,
+        'end': contest.end,
+        'delta': delta,
         'url_prefix': settings['url_prefix'],
         'csrf_token': token,
     }
