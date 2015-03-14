@@ -250,21 +250,6 @@ def list_results_view(request):
     }
 
 
-@view_config(route_name='results', renderer='templates/contests_listing.jinja2')
-def list_results_view(request):
-    """
-    List the old contests results
-    """
-    contest = get_current_contest()
-    registry = pyramid.threadlocal.get_current_registry()
-    settings = registry.settings
-    return {
-        'contest': contest,
-        'contests': contests,
-        'url_prefix': settings['url_prefix'],
-        'title': 'Contests listing',
-    }
-
 @view_config(route_name='json_id', renderer='json')
 def json_id_view(request):
     di = request.matchdict
