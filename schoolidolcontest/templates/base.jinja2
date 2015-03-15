@@ -44,6 +44,7 @@
 	    </ul>
 	    </li>
 	  <li>
+	    {% if current_contest %}
 	    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 	      {{ current_contest.name }}
 	      <span class="caret"></span>
@@ -52,7 +53,10 @@
 	      <li><a href="{{ url_prefix }}contest">Vote!</a></li>
 	      <li><a href="{{ url_prefix }}result/{{ current_contest.id }}">Ranking</a></li>
 	    </ul>
-	    </li>
+	    {% else %}
+	    <a href="{{ url_prefix }}results">Past Contests</a>
+	    {% endif %}
+	  </li>
 	  <li>
 	    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 	      <span class="caret"></span>

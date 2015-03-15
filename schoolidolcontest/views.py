@@ -107,7 +107,7 @@ def get_winner_cards(contest):
     best_card, best_girl = None, None
     for result in result_kinds:
         if result == 'best_girl':
-            best_girl_vote = best_girl_query(contest.id).first()
+            best_girl_vote = best_girl_query(contest.id).first()[0]
             best_girl = r.get('/api/cards/' + str(best_girl_vote.id_card) + '/?imagedefault=True').json()
         elif result == 'best_card':
             best_card_vote = best_card_query(contest.id).first()
@@ -258,8 +258,9 @@ def contest_vote_view(request):
     """
     now = datetime.datetime.now()
     contest = get_current_contest()
+    if not contest:
+        raise pyramid.exceptions.NotFound
     cards, settings, token = vote_page_view(request, contest=contest)
-    title = contest.name
     delta = datetime.datetime.combine(contest.end, datetime.datetime.min.time()) - datetime.datetime.now()
     return {
         'contest': contest,
@@ -280,12 +281,10 @@ def list_results_view(request):
     List the old contests results
     """
     current_contest = get_current_contest()
-    contests = DBSession.query(Contest).all()
+    contests = DBSession.query(Contest).filter(Contest.end < datetime.datetime.now()).order_by('-end')
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
-    for c in contests:
-        c.best_card, c.best_girl = get_winner_cards(c)
-        c.total_count = count_contest_votes(c.id)
+    contests = [{ 'contest': contest, 'total':  count_contest_votes(contest.id), 'winners': get_winner_cards(contest) } for contest in contests]
     return {
         'current_contest': current_contest,
         'contests': contests,

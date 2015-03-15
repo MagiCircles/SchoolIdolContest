@@ -4,14 +4,41 @@
 
 {% block content %}
 
-<h1>Contests listing</h1>
-<div class="row">
-{% for contest in contests %}
-<a class="row" href="{{ url_prefix }}result/{{ contest.id }}" target="_blank">
-  <div class="name name-card">
-    <strong>{{ contest.name }}</strong>
+<h1>Past Contests</h1>
+<div class="panel panel-schoolidol pastcontests">
+  <div class="panel-body">
+    {% for info in contests %}
+    {% set contest = info.contest %}
+    <a class="row" href="{{ url_prefix }}result/{{ contest.id }}" target="_blank">
+      <div class="row">
+	<div class="col-sm-8">
+	  <h3>{{ contest.name }}</h3>
+	  <div>
+	    <div class="pull-right text-muted">
+	      {{ info.total }} votes
+	    </div>
+	    <p class="text-muted">
+	      {% if contest.begin %}{{ contest.begin.strftime('%B %d') }} - {{ contest.end.strftime('%B %d %Y') }}{% if delta %} &nbsp;&nbsp;&nbsp;<a href="{{ url_prefix }}contest">{% if delta.days == 0 %}{{ (delta.seconds / 3600)|int }} hours left{% else %}{{ delta.days }} days left{% endif %}</a>{% endif %}{% endif %}
+	    </p>
+	  </div>
+	</div>
+	{% set (best_card, best_girl) = info.winners %}
+	{% if best_girl %}
+	<div class="col-sm-2 text-center text-{{ best_card.attribute }}">
+	  BEST Girl
+	  <div class="card border-{{ best_girl.attribute }}" style="background-image: url('{{ best_girl.card_idolized_image if (idolized or not best_girl.card_image) else best_girl.card_image }}')"></div>
+	</div>
+	{% endif %}
+	{% if best_card %}
+	<div class="col-sm-2 text-center text-{{ best_card.attribute }}">
+	  BEST Card
+	  <div class="card border-{{ best_card.attribute }}" style="background-image: url('{{ best_card.card_idolized_image if (idolized or not best_card.card_image) else best_card.card_image }}')"></div>
+	</div>
+	{% endif %}
+      </div>
+    </a>
+    {% endfor %}
   </div>
-</a>
-{% endfor %}
-</div> <!-- div-row -->
+</div>
+
 {% endblock %}

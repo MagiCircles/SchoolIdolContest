@@ -94,17 +94,6 @@ button.panel-schoolidol {
 }
 
 .ranking.panel-schoolidol {
-    .card {
-	background-size: 150px;
-	background-repeat: no-repeat;
-	background-position: center -10px;
-	height: 130px;
-	width: 130px;
-	border-radius: 50%;
-	margin: 10px;
-	margin-right: 0;
-	border: 2px solid;
-    }
     .panel-body {
 	padding-top: 0;
 	padding-bottom: 0;
@@ -150,7 +139,20 @@ button.panel-schoolidol {
 	    color: #965A38;
 	}
     }
-    .row {
+}
+.ranking.panel-schoolidol, .pastcontests.panel-schoolidol {
+    .card {
+	background-size: 150px;
+	background-repeat: no-repeat;
+	background-position: center -10px;
+	height: 130px;
+	width: 130px;
+	border-radius: 50%;
+	margin: 10px;
+	margin-right: 0;
+	border: 2px solid;
+    }
+    a.row {
 	display: block;
 	border-bottom: 1px solid @MainColor;
 	padding: 2px;
@@ -159,8 +161,25 @@ button.panel-schoolidol {
 	}
     }
 }
+.pastcontests.panel-schoolidol {
+    a.row {
+	padding: 20px;
+	&:hover,
+	&:focus {
+	    text-decoration: none;
+	}
+	.col-sm-2 {
+	    float: right;
+	}
+    }
+}
 
 .border-Smile { border-color: @SmileColor!important }
 .border-Pure { border-color: @PureColor!important }
 .border-Cool { border-color: @CoolColor!important }
 .border-All { border-color: @AllColor!important }
+
+.text-Smile { color: @SmileColor }
+.text-Pure { color: @PureColor }
+.text-Cool { color: @CoolColor }
+.text-All { color: @AllColor }
