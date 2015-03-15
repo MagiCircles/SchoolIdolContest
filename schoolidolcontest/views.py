@@ -265,7 +265,7 @@ def contest_vote_view(request):
     return {
         'contest': contest,
         'current_contest': contest,
-        'title': contest.title,
+        'title': contest.name,
         'cards': cards,
         'begin': contest.begin,
         'end': contest.end,
