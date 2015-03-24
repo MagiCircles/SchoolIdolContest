@@ -292,9 +292,9 @@ def list_results_view(request):
         'title': 'Contests listing',
     }
 
-
 @view_config(route_name='json_id', renderer='json')
 def json_id_view(request):
+    request.response.headers['Access-Control-Allow-Origin'] = '*'
     di = request.matchdict
     id = di.get("id", None)
     if id and id.isdigit():
@@ -308,6 +308,7 @@ def json_id_view(request):
 
 @view_config(route_name='json_name', renderer='json')
 def json_name_view(request):
+    request.response.headers['Access-Control-Allow-Origin'] = '*'
     di = request.matchdict
     name = di.get("name", None)
     vote, count = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == 0, Vote.name == name).first()
@@ -319,6 +320,7 @@ def json_name_view(request):
 
 @view_config(route_name='json_contest', renderer='json')
 def json_contest_view(request):
+    request.response.headers['Access-Control-Allow-Origin'] = '*'
     di = request.matchdict
     id = di.get("id", None)
     if not id:
@@ -334,6 +336,7 @@ def json_contest_view(request):
 
 @view_config(route_name='json_contests', renderer='json')
 def json_contests_view(request):
+    request.response.headers['Access-Control-Allow-Origin'] = '*'
     contests = DBSession.query(Contest).all()
     if not contests:
         return {}
@@ -350,6 +353,7 @@ def json_contests_view(request):
 
 @view_config(route_name='json_current_contest', renderer='json')
 def json_current_contest_view(request):
+    request.response.headers['Access-Control-Allow-Origin'] = '*'
     contest = get_current_contest()
     if not contest:
         return {}
