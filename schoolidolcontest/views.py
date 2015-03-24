@@ -316,3 +316,13 @@ def json_name_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {'name': name, 'count': count}
+
+@view_config(route_name='json_current_contest', renderer='json')
+def json_current_contest_view(request):
+    contest = get_current_contest()
+    if not contest:
+        return {}
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    return {'name': contest.name, 'begin': contest.begin, 'end': contest.end,
+            'id': contest.id, 'params': contest.params}

@@ -29,5 +29,6 @@ def main(global_config, **settings):
     config.add_route('results', '/results')
     config.add_route('json_id', '/json/id/{id}')
     config.add_route('json_name', '/json/name/{name}')
+    config.add_route('json_current_contest', '/json/current')
     config.scan()
     return config.make_wsgi_app()
