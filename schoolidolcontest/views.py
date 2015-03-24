@@ -332,6 +332,22 @@ def json_contest_view(request):
     return {'name': contest.name, 'begin': str(contest.begin), 'end': str(contest.end),
             'id': contest.id, 'params': contest.params, 'current': is_current}
 
+@view_config(route_name='json_contests', renderer='json')
+def json_contests_view(request):
+    contests = DBSession.query(Contest).all()
+    if not contests:
+        return {}
+    response = list()
+    for contest in contests:
+        response.append({'name': contest.name, 'begin': str(contest.begin),
+                         'end': str(contest.end), 'id': contest.id,
+                         'params': contest.params,
+                         'current': is_current_contest(contest)})
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    is_current = is_current_contest(contest)
+    return response
+
 @view_config(route_name='json_current_contest', renderer='json')
 def json_current_contest_view(request):
     contest = get_current_contest()
