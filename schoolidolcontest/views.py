@@ -356,4 +356,4 @@ def json_current_contest_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {'name': contest.name, 'begin': str(contest.begin), 'end': str(contest.end),
-            'id': contest.id, 'params': contest.params, current: True}
+            'id': contest.id, 'params': contest.params, 'current': True}
