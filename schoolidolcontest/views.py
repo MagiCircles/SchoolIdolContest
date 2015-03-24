@@ -317,6 +317,21 @@ def json_name_view(request):
     settings = registry.settings
     return {'name': name, 'count': count}
 
+@view_config(route_name='json_contest', renderer='json')
+def json_contest_view(request):
+    di = request.matchdict
+    id = di.get("id", None)
+    if not id:
+        return {}
+    contest = DBSession.query(Contest).filter(Contest.id == id).first()
+    if not contest:
+        return {}
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    is_current = is_current_contest(contest)
+    return {'name': contest.name, 'begin': str(contest.begin), 'end': str(contest.end),
+            'id': contest.id, 'params': contest.params, 'current': is_current}
+
 @view_config(route_name='json_current_contest', renderer='json')
 def json_current_contest_view(request):
     contest = get_current_contest()
@@ -325,4 +340,4 @@ def json_current_contest_view(request):
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     return {'name': contest.name, 'begin': str(contest.begin), 'end': str(contest.end),
-            'id': contest.id, 'params': contest.params}
+            'id': contest.id, 'params': contest.params, current: True}
