@@ -307,12 +307,12 @@ def json_id_view(request):
     return {'id': id, 'count': vote.counter}
 
 @view_config(route_name='json_name', renderer='json')
-def json_id_view(request):
+def json_name_view(request):
     di = request.matchdict
     name = di.get("name", None)
-    vote = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == 0, Vote.name == name).first()
+    vote, count = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == 0, Vote.name == name).first()
     if not vote:
         return {}
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
-    return {'name': name, 'count': vote.counter}
+    return {'name': name, 'count': count}
