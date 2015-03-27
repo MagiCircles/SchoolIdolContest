@@ -1,6 +1,6 @@
 {% extends "base.jinja2" %}
 
-{% block title %}BEST GIRL{% endblock %}
+{% block title %}{% if title %}{{ title }}{% else %}BEST GIRL{% endif %}{% endblock %}
 
 {% block content %}
 
@@ -85,4 +85,14 @@
   <a href="{{ url_prefix }}{% if contest %}contest{% else %}{% endif %}" class="btn btn-block btn-main btn-xl">Vote!</a>
 </div>
 {% endif %}
+
+{% if contest %}
+{% set disqus_identifier = 'contest' + contest.id|string %}
+{% include 'disqus.jinja2' %}
+{% else %}
+{% set disqus_identifier = 'contestglobal' %}
+{% include 'disqus.jinja2' %}
+{% endif %}
+
+
 {% endblock %}
