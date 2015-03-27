@@ -256,10 +256,12 @@ def contest_vote_view(request):
     """
     The contest voting page: vote for the current contest
     """
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
     now = datetime.datetime.now()
     contest = get_current_contest()
     if not contest:
-        raise pyramid.exceptions.NotFound
+        return HTTPFound(location=settings['url_prefix'] + 'results')
     cards, settings, token = vote_page_view(request, contest=contest)
     delta = datetime.datetime.combine(contest.end, datetime.datetime.min.time()) - datetime.datetime.now()
     return {
