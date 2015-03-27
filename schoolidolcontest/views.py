@@ -294,6 +294,17 @@ def list_results_view(request):
         'title': 'Contests listing',
     }
 
+@view_config(route_name='calendar', renderer='templates/calendar.jinja2')
+def calendar_view(request):
+    """
+    Calendar of events
+    """
+    current_contest = get_current_contest()
+    return {
+        'current_contest': current_contest,
+        'url_prefix': settings['url_prefix'],
+    }
+
 def enable_cors(func):
     def wrapper(request):
         request.response.headers['Access-Control-Allow-Origin'] = '*'
