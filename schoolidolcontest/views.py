@@ -36,8 +36,9 @@ def get_current_contest():
     return contest
 
 def is_current_contest(contest):
-    now = datetime.date.today()
-    return now <= contest.end and now >= contest.begin
+    now = datetime.datetime.now()
+    return (now <= datetime.datetime(contest.end.year, contest.end.month, contest.end.day)
+            and now >= datetime.datetime(contest.begin.year, contest.begin.month, contest.begin.day))
 
 def get_cards(left_id, right_id):
     ret = dict()
