@@ -299,6 +299,8 @@ def calendar_view(request):
     """
     Calendar of events
     """
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
     current_contest = get_current_contest()
     return {
         'current_contest': current_contest,
