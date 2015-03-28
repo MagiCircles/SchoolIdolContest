@@ -22,17 +22,17 @@
 	    </p>
 	  </div>
 	</div>
-	{% set (best_card, best_girl) = info.winners %}
+	{% set ((best_card, best_card_idolized), (best_girl, best_girl_idolized)) = info.winners %}
 	{% if best_girl %}
 	<div class="col-sm-2 text-center text-{{ best_card.attribute }}">
 	  BEST Girl
-	  <div class="card border-{{ best_girl.attribute }}" style="background-image: url('{{ best_girl.card_idolized_image if (idolized or not best_girl.card_image) else best_girl.card_image }}')"></div>
+	  <div class="card border-{{ best_girl.attribute }}" style="background-image: url('{{ best_girl.card_idolized_image if (best_girl_idolized or not best_girl.card_image) else best_girl.card_image }}')"></div>
 	</div>
 	{% endif %}
 	{% if best_card %}
 	<div class="col-sm-2 text-center text-{{ best_card.attribute }}">
 	  BEST Card
-	  <div class="card border-{{ best_card.attribute }}" style="background-image: url('{{ best_card.card_idolized_image if (idolized or not best_card.card_image) else best_card.card_image }}')"></div>
+	  <div class="card border-{{ best_card.attribute }}" style="background-image: url('{{ best_card.card_idolized_image if (best_card_idolized or not best_card.card_image) else best_card.card_image }}')"></div>
 	</div>
 	{% endif %}
       </div>

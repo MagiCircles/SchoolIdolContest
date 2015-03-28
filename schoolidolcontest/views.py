@@ -104,14 +104,14 @@ def count_contest_votes(contest):
 def get_winner_cards(contest):
     r = ApiRequest()
     result_kinds = contest.result_type.split()
-    best_card, best_girl = None, None
+    best_card, best_girl = (None, None), (None, None)
     for result in result_kinds:
         if result == 'best_girl':
             best_girl_vote = best_girl_query(contest.id).first()[0]
-            best_girl = r.get('/api/cards/' + str(best_girl_vote.id_card) + '/?imagedefault=True').json()
+            best_girl = (r.get('/api/cards/' + str(best_girl_vote.id_card) + '/?imagedefault=True').json(), best_girl_vote.idolized)
         elif result == 'best_card':
             best_card_vote = best_card_query(contest.id).first()
-            best_card = r.get('/api/cards/' + str(best_card_vote.id_card) + '/?imagedefault=True').json()
+            best_card = (r.get('/api/cards/' + str(best_card_vote.id_card) + '/?imagedefault=True').json(), best_card_vote.idolized)
     return best_card, best_girl
 
 # Functions related to views themselves
