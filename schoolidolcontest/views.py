@@ -69,7 +69,10 @@ def pick_two_random_cards():
 
 def pick_two_random_cards_query(params):
     r = ApiRequest()
-    cards = r.get('/api/cardids/' + params).json()
+    if params and params[0] != '?':
+        cards = params.split(',')
+    else:
+        cards = r.get('/api/cardids/' + params).json()
     left_id = random.choice(cards)
     right_id = random.choice(cards)
     while (left_id == right_id):
