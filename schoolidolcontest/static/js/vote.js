@@ -1,4 +1,10 @@
 
+$('form').submit(function(e) {
+    $('#left').attr('disabled', 'disabled');
+    $('#right').attr('disabled', 'disabled');
+    return true;
+});
+
 $(document).keydown(function(e) {
     switch(e.which) {
     case 37:
