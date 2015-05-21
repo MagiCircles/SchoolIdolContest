@@ -287,7 +287,7 @@ def list_results_view(request):
     List the old contests results
     """
     current_contest = get_current_contest()
-    contests = DBSession.query(Contest).filter(Contest.end < datetime.datetime.now()).order_by('-end')
+    contests = DBSession.query(Contest).filter(Contest.end < datetime.datetime.now()).order_by('end')
     registry = pyramid.threadlocal.get_current_registry()
     settings = registry.settings
     contests = [{ 'contest': contest, 'total':  count_contest_votes(contest.id), 'winners': get_winner_cards(contest) } for contest in contests]
