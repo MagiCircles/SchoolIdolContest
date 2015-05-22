@@ -10,6 +10,7 @@
     "dependencies": {
 	"less": "~2.0.0",
 	"bootstrap": "~3.3.1",
-	"fontawesome": "~4.3.0"
+	"fontawesome": "~4.3.0",
+	"countdown": "2.1.0"
     }
 }

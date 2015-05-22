@@ -4,12 +4,26 @@
 
 {% block js %}
     <script src="{{ url_prefix }}static/js/vote.js"></script>
+    <script src="{{ url_prefix }}static/bower/countdown/dest/jquery.countdown.min.js"></script>
+    <script src="{{ url_prefix }}static/js/countdown.js"></script>
 {% endblock %}
 
 {% block content %}
 
 <h1>{{ title }}
-{% if begin %}<br><small>{{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}{% if delta %} &nbsp;&nbsp;&nbsp;<span class="text-main">{% if delta.days == 0 %}{{ (delta.seconds / 3600)|int }} hours left{% else %}{{ delta.days }} days left{% endif %}</span>{% endif %}</small>{% endif %}
+  {% if begin %}<br><small>
+    {{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}
+    {% if delta %}
+    <br><a href="{{ url_prefix }}contest">
+      <span id="countdown" style="display: block; font-size: 0.6em">
+	<script>
+	  var countdowndate = "{{ end.strftime("%B %d, %Y %H:%M:%S +0000") }}";
+	</script>
+      </span>
+    </a>
+    {% endif %}
+  </small>
+  {% endif %}
 </h1>
 <form action="{{ url_prefix }}__vote" method="post">
   <div class="row">

@@ -2,11 +2,29 @@
 
 {% block title %}{% if title %}{{ title }}{% else %}BEST GIRL{% endif %}{% endblock %}
 
+{% block js %}
+    <script src="{{ url_prefix }}static/bower/countdown/dest/jquery.countdown.min.js"></script>
+    <script src="{{ url_prefix }}static/js/countdown.js"></script>
+{% endblock %}
+
 {% block content %}
 
 {% if title %}
 <h1>{{ title }}
-{% if begin %}<br><small>{{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}{% if delta %} &nbsp;&nbsp;&nbsp;<a href="{{ url_prefix }}contest">{% if delta.days == 0 %}{{ (delta.seconds / 3600)|int }} hours left{% else %}{{ delta.days }} days left{% endif %}</a>{% endif %}</small>{% endif %}</h1>
+  {% if begin %}<br><small>
+    {{ begin.strftime('%B %d') }} - {{ end.strftime('%B %d') }}
+    {% if delta %}
+    <br><a href="{{ url_prefix }}contest">
+      <span id="countdown" style="display: block; font-size: 0.6em">
+	<script>
+	  var countdowndate = "{{ end.strftime("%B %d, %Y %H:%M:%S +0000") }}";
+	</script>
+      </span>
+    </a>
+    {% endif %}
+  </small>
+  {% endif %}
+</h1>
 {% else %}
 <h1>Ranking</h1>
 {% endif %}
