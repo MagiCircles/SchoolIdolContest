@@ -79,6 +79,22 @@ def pick_two_random_cards_query(params):
         right_id = random.choice(cards)
     return get_cards(left_id, right_id)
 
+def vs_cheat_contest(params):
+    r = ApiRequest()
+    if params and params[0] != '?':
+        cards = params.split(',')
+    else:
+        cards = r.get('/api/cardids/' + params).json()
+    left_id = random.choice(cards)
+    if random.choice([True, False]):
+        all_cards = r.get('/api/cards/', params={'page_size': 1}).json()
+        right_id = random.randint(1, all_cards['count'])
+    else:
+        right_id = random.choice(cards)
+    while left_id == right_id:
+        left_id = random.choice(cards)
+    return get_cards(left_id, right_id)
+
 def best_girl_query(contest):
     req = DBSession.query(Vote,func.sum(Vote.counter).label('counter_all')).filter(Vote.id_contest == contest).group_by(Vote.name).order_by('counter_all DESC')
     return req
@@ -217,7 +233,8 @@ def vote_page_view(request, contest=None):
     session = request.session
     now = datetime.datetime.now()
     if contest:
-        cards = pick_two_random_cards_query(contest.params)
+        #cards = pick_two_random_cards_query(contest.params)
+        cards = vs_cheat_contest(contest.params)
     else:
         cards = pick_two_random_cards()
     with transaction.manager:
