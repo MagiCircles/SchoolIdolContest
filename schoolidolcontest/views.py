@@ -233,8 +233,8 @@ def vote_page_view(request, contest=None):
     session = request.session
     now = datetime.datetime.now()
     if contest:
-        #cards = pick_two_random_cards_query(contest.params)
-        cards = vs_cheat_contest(contest.params)
+        cards = pick_two_random_cards_query(contest.params)
+        #cards = vs_cheat_contest(contest.params)
     else:
         cards = pick_two_random_cards()
     with transaction.manager:
