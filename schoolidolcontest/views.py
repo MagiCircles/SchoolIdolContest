@@ -58,11 +58,24 @@ def filter_two_random_cards(*args, **kwargs):
         right_id = random.choice(cards)
     return get_cards(left_id, right_id)
 
-def pick_two_random_cards():
+def get_cards_count():
+    registry = pyramid.threadlocal.get_current_registry()
+    settings = registry.settings
+    if settings['cached_cards_count'] == 'true':
+        try:
+            with open(settings['cached_cards_count_path'], 'r') as f:
+                return int(f.read())
+        except:
+            pass
     r = ApiRequest()
     cards = r.get('/api/cards/', params={'page_size': 1}).json()
-    left_id = random.randint(1, cards['count'])
-    right_id = random.randint(1, cards['count'])
+    return cards['count']
+
+def pick_two_random_cards():
+    r = ApiRequest()
+    count = get_cards_count()
+    left_id = random.randint(1, count)
+    right_id = random.randint(1, count)
     while (left_id == right_id):
         right_id = random.randint(1, cards['count'])
     return get_cards(left_id, right_id)
@@ -87,8 +100,8 @@ def vs_cheat_contest(params):
         cards = r.get('/api/cardids/' + params).json()
     left_id = random.choice(cards)
     if random.choice([True, False]):
-        all_cards = r.get('/api/cards/', params={'page_size': 1}).json()
-        right_id = random.randint(1, all_cards['count'])
+        count = get_cards_count()
+        right_id = random.randint(1, count)
     else:
         right_id = random.choice(cards)
     while left_id == right_id:
