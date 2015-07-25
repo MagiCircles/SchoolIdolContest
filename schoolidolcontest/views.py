@@ -8,6 +8,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 import pyramid.threadlocal
 
 from sqlalchemy.exc import DBAPIError
+from alembic import op
 from sqlalchemy import func
 import transaction
 
