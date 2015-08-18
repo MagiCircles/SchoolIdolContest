@@ -26,7 +26,7 @@
 	{% if best_girl %}
 	<div class="col-sm-2 text-center text-{{ best_card.attribute }}">
 	  BEST Girl
-	  <div class="card border-{{ best_girl.attribute }}" style="background-image: url('{{ best_girl.card_idolized_image if (best_girl_idolized or not best_girl.card_image) else best_girl.card_image }}')"></div>
+	  <img src="http://schoolido.lu/static/idols/chibi/{{ best_girl.name.replace(' ', '_').replace('\'', '-') }}.png" style="height: 130px; width: 130px; margin: 10px 5px;">
 	</div>
 	{% endif %}
 	{% if best_card %}
