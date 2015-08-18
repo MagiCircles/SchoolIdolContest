@@ -19,6 +19,7 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'requests',
+    'alembic',
     ]
 
 setup(name='SchoolIdolContest',
