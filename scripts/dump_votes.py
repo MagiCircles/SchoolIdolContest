@@ -25,6 +25,6 @@ for vote in votes:
                  'counter':vote.counter,
                  'idolized':vote.idolized})
 
-f = open('test.json', "w")
+f = open('votes.json', "w")
 f.write(json.dumps(dump))
 f.close()
